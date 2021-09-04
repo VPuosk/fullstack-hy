@@ -9,10 +9,21 @@ const Button = ({handle, text}) => {
 }
 
 const StatisticLine = ({text, value, type}) => {
+
+  if (type === "") {
+    return (
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
+    )
+  }
+
   return (
-    <>
-      {text} {value} {type}<br />
-    </>
+    <tr>
+      <td>{text}</td>
+      <td>{value} {type}</td>
+    </tr>
   )
 }
 
@@ -31,12 +42,16 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <div>
-      <StatisticLine text="good" value={good} type="" />
-      <StatisticLine text="neutral" value={neutral} type="" />
-      <StatisticLine text="bad" value={bad} type="" />
-      <StatisticLine text="all" value={sum} type="" />
-      <StatisticLine text="average" value={difference / sum} type="" />
-      <StatisticLine text="positive" value={100 * good / sum} type="%" />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={good} type="" />
+          <StatisticLine text="neutral" value={neutral} type="" />
+          <StatisticLine text="bad" value={bad} type="" />
+          <StatisticLine text="all" value={sum} type="" />
+          <StatisticLine text="average" value={difference / sum} type="" />
+          <StatisticLine text="positive" value={100 * good / sum} type="%" />
+        </tbody>
+      </table>
     </div>
   )
 }
