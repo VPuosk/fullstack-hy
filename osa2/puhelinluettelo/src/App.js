@@ -29,6 +29,7 @@ const App = () => {
   ]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ filterer, setFilterer ] = useState('')
 
   // mikä käsittelee 'onSubmit' tapahtumaa
   const tapahtumanKäsittelijä = (tapahtuma) => {
@@ -63,18 +64,31 @@ const App = () => {
     setNewNumber(muutos.target.value)
   }
 
+  const muutoksenKäsittelijäHaku = (muutos) => {
+    setFilterer(muutos.target.value)
+  }
+
   return (
     <div>
+      <h2>Search by name</h2>
+      <form>
+        <div>
+          Contains: <input
+                  value = {filterer}
+                  onChange = {muutoksenKäsittelijäHaku}
+                />
+        </div>
+      </form>
       <h2>Phonebook</h2>
       <form onSubmit={tapahtumanKäsittelijä}>
         <div>
-          name: <input
+          Name: <input
                   value = {newName}
                   onChange = {muutoksenKäsittelijäNimi}
                 />
         </div>
         <div>
-          number: <input
+          Number: <input
                   value = {newNumber}
                   onChange = {muutoksenKäsittelijäNumero}
                 />
@@ -84,7 +98,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      <Numerot numerot={persons} />
+      <Numerot numerot={persons.filter(person => person.name.toUpperCase().includes(filterer.toUpperCase()))} />
     </div>
   )
 
