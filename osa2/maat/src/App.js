@@ -14,10 +14,11 @@ const HakuPäivitin = (props) => {
   )
 }
 
-const MaaUsea = ({ maa }) => {
+const MaaUsea = ({ maa, suodatin }) => {
   return (
     <div>
       {maa.name}
+      <button onClick={() => suodatin(maa.name)}>Show</button>
     </div>
   )
 }
@@ -45,7 +46,7 @@ const MaaYksi = ({ maa }) => {
   )
 }
 
-const MaaLista = ({ maat }) => {
+const MaaLista = ({ maat, suodatin }) => {
   if (maat.length > 10) {
     return (
       <div>
@@ -58,7 +59,7 @@ const MaaLista = ({ maat }) => {
     return (
       <div>
         {maat.map(maa => 
-          <MaaUsea key={maa.name} maa={maa} />
+          <MaaUsea key={maa.name} maa={maa} suodatin={suodatin} />
         )}
       </div>
     )
@@ -106,7 +107,13 @@ const App = () => {
         value={filterer}
         function={muutoksenKäsittelijäHaku}
       />
-      <MaaLista maat={countries.filter(country => country.name.toUpperCase().includes(filterer.toUpperCase()))} />
+      <MaaLista
+        suodatin={setFilterer}
+        maat={countries
+          .filter(country => country
+                                  .name
+                                  .toUpperCase()
+                                  .includes(filterer.toUpperCase()))} />
     </div>
   )
 
