@@ -30,11 +30,21 @@ const App = () => {
   const tapahtumankäsittelijä = (tapahtuma) => {
     tapahtuma.preventDefault()
     // console.log('Jottai tapahtusi', tapahtuma.target)
-    // tehdään uusi henkilö/numero 'olio'
-    const personObj = {
-      name : newName,
+    
+    // tuplausta varten tarvitaan nimilista
+    const nimilista = persons.map(person => person.name)
+    
+    // estetään tuplaus
+    if (nimilista.includes(newName)) {
+      alert(`${newName} is already added to phonebook`)
+      //console.log('tuplaus')
+    } else {
+      // tehdään uusi henkilö/numero 'olio'
+      const personObj = {
+        name : newName,
+      }
+      setPersons(persons.concat(personObj))
     }
-    setPersons(persons.concat(personObj))
   }
 
   // mikä käsittelee 'onChange' muutosta
