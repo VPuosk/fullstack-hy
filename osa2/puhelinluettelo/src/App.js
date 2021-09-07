@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 // yksittäisen numeron käsittelijä
 const Numero = ({ numero }) => {
@@ -77,6 +78,18 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterer, setFilterer ] = useState('')
+
+  useEffect(() => {
+    //console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        //console.log('done')
+        //console.log(response.data)
+        setPersons(response.data)
+      })
+  }, [] )
+  //console.log('render', persons.length, 'persons')
 
   // mikä käsittelee 'onSubmit' tapahtumaa
   const tapahtumanKäsittelijä = (tapahtuma) => {
