@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 const Numero = ({ numero }) => {
   return (
     <div>
-      {numero.name}
+      {numero.name} {numero.number}
     </div>
   )
 }
@@ -22,12 +22,16 @@ const Numerot = ({ numerot }) => {
 
 const App = () => {
   const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { 
+      name: 'Arto Hellas',
+      number: '040-1231244'
+    }
   ]) 
   const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
 
   // mikä käsittelee 'onSubmit' tapahtumaa
-  const tapahtumankäsittelijä = (tapahtuma) => {
+  const tapahtumanKäsittelijä = (tapahtuma) => {
     tapahtuma.preventDefault()
     // console.log('Jottai tapahtusi', tapahtuma.target)
     
@@ -42,25 +46,37 @@ const App = () => {
       // tehdään uusi henkilö/numero 'olio'
       const personObj = {
         name : newName,
+        number : newNumber,
       }
       setPersons(persons.concat(personObj))
     }
   }
 
   // mikä käsittelee 'onChange' muutosta
-  const muutoksenkäsittelijä = (muutos) => {
+  const muutoksenKäsittelijäNimi = (muutos) => {
     //console.log(tapahtuma.target.value)
     setNewName(muutos.target.value)
+  }
+
+  const muutoksenKäsittelijäNumero = (muutos) => {
+    //console.log(tapahtuma.target.value)
+    setNewNumber(muutos.target.value)
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={tapahtumankäsittelijä}>
+      <form onSubmit={tapahtumanKäsittelijä}>
         <div>
           name: <input
                   value = {newName}
-                  onChange = {muutoksenkäsittelijä}
+                  onChange = {muutoksenKäsittelijäNimi}
+                />
+        </div>
+        <div>
+          number: <input
+                  value = {newNumber}
+                  onChange = {muutoksenKäsittelijäNumero}
                 />
         </div>
         <div>
