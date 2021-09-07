@@ -31,7 +31,51 @@ const Kieli = ({ kieli }) => {
   )
 }
 
-const MaaYksi = ({ maa }) => {
+const Sää = ({ maa }) => {
+
+  const [ tila, setTila ] = useState({
+    "current": {
+      "temperature": 0,
+      "wind_speed": 0,
+      "wind_dir": "?",
+      "weather_icons": [
+        "https://assets.weatherstack.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+      ]
+    }
+  })
+
+  const api_key = process.env.REACT_APP_API_KEY
+  const paikka = maa.capital
+  const alue = maa.name
+
+  useEffect(() => {
+    //console.log('effect')
+    
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${paikka},${alue}&units=m`)
+      .then(response => {
+        //console.log('done')
+        //console.log(response.data)
+        if (response.data.hasOwnProperty('success')) {
+          // virheilmoituksen etsimiseen...
+          console.log(response.data)
+        } else {
+          setTila(response.data)
+        }
+      })
+  }, [alue, api_key, paikka] )
+  
+  return (
+    <div>
+      <h3>Weather in {maa.capital}</h3>
+      <div><b>Temperature:</b> {tila.current.temperature}</div>
+      <img src={tila.current.weather_icons[0]} alt="sää" height="40" border="2px solid"/>
+      <div><b>Wind:</b> {tila.current.wind_speed} from {tila.current.wind_dir}</div>
+    </div>
+  )
+}
+
+const MaaYksi = ({ tila, maa }) => {
   return (
     <div>
       <h2>{maa.name}</h2>
@@ -42,6 +86,7 @@ const MaaYksi = ({ maa }) => {
         <Kieli key={kieli.name} kieli={kieli} />
       )}
       <img src={maa.flag} alt="flag" height="120" border="2px solid"/>
+      <Sää maa={maa} />
     </div>
   )
 }
