@@ -71,6 +71,15 @@ const App = () => {
     }
   }
 
+  const numeronPoistaja = (id) => {
+    //console.log(`POISTAJA: ${id}`)
+    phonebookService
+      .removeNumber(id)
+    //console.log(persons)
+    //console.log(persons.filter(person => person.id !== id))
+    setPersons(persons.filter(person => person.id !== id))
+  }
+
   // mikä käsittelee 'onChange' muutosta
   const muutoksenKäsittelijäNimi = (muutos) => {
     //console.log(tapahtuma.target.value)
@@ -106,6 +115,7 @@ const App = () => {
       <Phonebook
         persons={persons}
         filter={filterer}
+        poistaNumeroID = {numeronPoistaja}
       />
     </div>
   )

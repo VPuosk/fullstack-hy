@@ -1,29 +1,37 @@
 import React from 'react'
 
 // yksittäisen numeron käsittelijä
-const Numero = ({ numero }) => {
+const Numero = ({ numero, poistaNumero }) => {
     return (
         <div>
             {numero.name} {numero.number}
+            <button onClick={poistaNumero}>Delete</button>
         </div>
     )
 }
   
 // kaikkien numeroiden käsittelijä
-const Numerot = ({ numerot }) => {
+const Numerot = ({ numerot, poistaNumeroID }) => {
     return (
         <div>
             {numerot.map(numero => 
-                <Numero key={numero.name} numero={numero} />
+                <Numero
+                    key={numero.name}
+                    numero={numero}
+                    poistaNumero={() => poistaNumeroID(numero.id)}
+                />
             )}
         </div>
     )
 }
 
-const Phonebook = ({ persons, filter }) => {
+const Phonebook = ({ persons, filter, poistaNumeroID }) => {
     return (
         <>
-            <Numerot numerot={persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))} />
+            <Numerot
+                numerot={persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))} 
+                poistaNumeroID = {poistaNumeroID}
+            />
         </>
     )
 }

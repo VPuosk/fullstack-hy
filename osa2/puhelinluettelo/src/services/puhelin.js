@@ -16,6 +16,10 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
+const removeNumber = (id) => {
+    axios.delete(`${baseUrl}/${id}`)
+}
+
 //export default { 
 //  getAll: getAll, 
 //  create: create, 
@@ -25,6 +29,7 @@ const update = (id, newObject) => {
 const puhelin = {
     getAll: getAll, 
     create: create, 
-    update: update 
+    update: update,
+    removeNumber: removeNumber
 };
 export default puhelin;
