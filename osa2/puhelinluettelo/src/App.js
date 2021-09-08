@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+//import axios from 'axios'
 import Phonebook from './components/Phonebook'
 import Lisääjä from './components/Lisääjä'
+import phonebookService from './services/puhelin'
 
 const HakuPäivitin = (props) => {
   return (
@@ -30,12 +31,12 @@ const App = () => {
 
   useEffect(() => {
     //console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    phonebookService
+      .getAll()
       .then(response => {
         //console.log('done')
         //console.log(response.data)
-        setPersons(response.data)
+        setPersons(response)
       })
   }, [] )
   //console.log('render', persons.length, 'persons')
@@ -58,11 +59,11 @@ const App = () => {
         name : newName,
         number : newNumber,
       }
-      axios
-        .post(`http://localhost:3001/persons`, personObj)
+      phonebookService
+        .create(personObj)
         .then(response => {
-          console.log(response)
-          setPersons(persons.concat(response.data))
+          //console.log(response)
+          setPersons(persons.concat(response))
           setNewName('')
           setNewNumber('')
         })
