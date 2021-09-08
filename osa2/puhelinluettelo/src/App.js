@@ -51,8 +51,18 @@ const App = () => {
     
     // estetään tuplaus
     if (nimilista.includes(newName)) {
-      alert(`${newName} is already added to phonebook`)
+      //alert(`${newName} is already added to phonebook`)
       //console.log('tuplaus')
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number?`)) {
+        const personObj = persons.find(person => person.name === newName)
+        const personObjAlt = {...personObj, number: newNumber}
+
+        phonebookService
+          .update(personObj.id, personObjAlt)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== personObj.id ? person : response))
+          })
+      }
     } else {
       // tehdään uusi henkilö/numero 'olio'
       const personObj = {
