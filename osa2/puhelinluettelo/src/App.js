@@ -71,13 +71,15 @@ const App = () => {
     }
   }
 
-  const numeronPoistaja = (id) => {
+  const numeronPoistaja = (id, nimi) => {
     //console.log(`POISTAJA: ${id}`)
-    phonebookService
-      .removeNumber(id)
-    //console.log(persons)
-    //console.log(persons.filter(person => person.id !== id))
-    setPersons(persons.filter(person => person.id !== id))
+    if (window.confirm(`Delete ${nimi}?`)) {
+      phonebookService
+        .removeNumber(id)
+      //console.log(persons)
+      //console.log(persons.filter(person => person.id !== id))
+      setPersons(persons.filter(person => person.id !== id))
+    }
   }
 
   // mikä käsittelee 'onChange' muutosta

@@ -18,7 +18,7 @@ const Numerot = ({ numerot, poistaNumeroID }) => {
                 <Numero
                     key={numero.name}
                     numero={numero}
-                    poistaNumero={() => poistaNumeroID(numero.id)}
+                    poistaNumero={() => poistaNumeroID(numero.id, numero.name)}
                 />
             )}
         </div>
