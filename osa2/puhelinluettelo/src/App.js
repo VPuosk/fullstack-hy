@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 //import axios from 'axios'
 import Phonebook from './components/Phonebook'
 import Lisääjä from './components/Lisääjä'
+import Ilmoitus from './components/Ilmoitus'
 import phonebookService from './services/puhelin'
+import './index.css'
 
 const HakuPäivitin = (props) => {
   return (
@@ -28,6 +30,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterer, setFilterer ] = useState('')
+  const [ virheIlmoitus, asetaVirheIlmoitus] = useState(null)
 
   useEffect(() => {
     //console.log('effect')
@@ -61,6 +64,21 @@ const App = () => {
           .update(personObj.id, personObjAlt)
           .then(response => {
             setPersons(persons.map(person => person.id !== personObj.id ? person : response))
+            asetaVirheIlmoitus(
+              `Success: Number of ${response.name} has been changed`
+            )
+            setTimeout(() => {
+              asetaVirheIlmoitus(null)
+            }, 3000)
+          })
+          .catch(error => {
+            asetaVirheIlmoitus(
+              `Error: ${newName} had already been removed`
+            )
+            setTimeout(() => {
+              asetaVirheIlmoitus(null)
+            }, 3000)
+            setPersons(persons.filter(person => person.name !== newName))
           })
       }
     } else {
@@ -76,6 +94,21 @@ const App = () => {
           setPersons(persons.concat(response))
           setNewName('')
           setNewNumber('')
+          asetaVirheIlmoitus(
+            `Success: ${personObj.name} has been added`
+          )
+          
+          setTimeout(() => {
+            asetaVirheIlmoitus(null)
+          }, 3000)
+        })
+        .catch(error => {
+          asetaVirheIlmoitus(
+            `Error: ${personObj.name} has not been added`
+          )
+          setTimeout(() => {
+            asetaVirheIlmoitus(null)
+          }, 3000)
         })
       //setPersons(persons.concat(personObj))
     }
@@ -89,6 +122,12 @@ const App = () => {
       //console.log(persons)
       //console.log(persons.filter(person => person.id !== id))
       setPersons(persons.filter(person => person.id !== id))
+      asetaVirheIlmoitus(
+        `Success: ${nimi} has been removed`
+      )
+      setTimeout(() => {
+        asetaVirheIlmoitus(null)
+      }, 3000)
     }
   }
 
@@ -109,13 +148,15 @@ const App = () => {
 
   return (
     <div>
+      <h1>Phonebook</h1>
+      <Ilmoitus message={virheIlmoitus} />
       <h2>Search by name</h2>
       <HakuPäivitin
         name='Contains: '
         value={filterer}
         function={muutoksenKäsittelijäHaku}
       />
-      <h2>Phonebook</h2>
+      <h2>Add or update information</h2>
       <Lisääjä
         handler={tapahtumanKäsittelijä}
         nimi={newName}
