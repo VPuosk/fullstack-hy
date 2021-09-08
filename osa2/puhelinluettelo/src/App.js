@@ -1,67 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
-// yksittäisen numeron käsittelijä
-const Numero = ({ numero }) => {
-  return (
-    <div>
-      {numero.name} {numero.number}
-    </div>
-  )
-}
-
-// kaikkien numeroiden käsittelijä
-const Numerot = ({ numerot }) => {
-  return (
-    <div>
-      {numerot.map(numero => 
-        <Numero key={numero.name} numero={numero} />
-      )}
-    </div>
-  )
-}
+import Phonebook from './components/Phonebook'
+import Lisääjä from './components/Lisääjä'
 
 const HakuPäivitin = (props) => {
   return (
     <>
       <form>
         {props.name} <input
-                    value = {props.value}
-                    onChange = {props.function}
-                  />
-      </form>
-    </>
-  )
-}
-
-const KenttäPäivitin = (props) => {
-  return (
-    <div>
-      {props.name} <input
-        value = {props.value}
-        onChange = {props.function}
-      />
-    </div>
-  )
-}
-
-const LisäysKenttä = (props) => {
-  return (
-    <>
-      <form onSubmit={props.handler}>
-        <KenttäPäivitin
-          name='Name: '
-          value={props.nimi}
-          function={props.nimihandler}
+          value = {props.value}
+          onChange = {props.function}
         />
-        <KenttäPäivitin
-          name='Number: '
-          value={props.numero}
-          function={props.numerohandler}
-        />
-        <div>
-          <button type="submit">Add</button>
-        </div>
       </form>
     </>
   )
@@ -109,7 +58,15 @@ const App = () => {
         name : newName,
         number : newNumber,
       }
-      setPersons(persons.concat(personObj))
+      axios
+        .post(`http://localhost:3001/persons`, personObj)
+        .then(response => {
+          console.log(response)
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+      //setPersons(persons.concat(personObj))
     }
   }
 
@@ -137,7 +94,7 @@ const App = () => {
         function={muutoksenKäsittelijäHaku}
       />
       <h2>Phonebook</h2>
-      <LisäysKenttä
+      <Lisääjä
         handler={tapahtumanKäsittelijä}
         nimi={newName}
         numero={newNumber}
@@ -145,10 +102,12 @@ const App = () => {
         numerohandler={muutoksenKäsittelijäNumero}
       />
       <h2>Numbers</h2>
-      <Numerot numerot={persons.filter(person => person.name.toUpperCase().includes(filterer.toUpperCase()))} />
+      <Phonebook
+        persons={persons}
+        filter={filterer}
+      />
     </div>
   )
-
 }
 
 export default App
