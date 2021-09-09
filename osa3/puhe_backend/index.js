@@ -5,6 +5,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('build'))
 app.use(morgan(function (tokens, req, res) {
   if (tokens.method(req,res) == "POST") {
     const data = JSON.stringify(req.body)
