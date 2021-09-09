@@ -67,18 +67,24 @@ app.get('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (pyynto, vastaus) => {
   const runko = pyynto.body
 
-  console.log(pyynto)
-  console.log(runko)
+  //console.log(pyynto)
+  //console.log(runko)
 
   if (!runko.name) {
-    return response.status(400).json({ 
+    return vastaus.status(400).json({ 
       error: 'name missing' 
     })
   }
 
   if (!runko.number) {
-    return response.status(400).json({ 
+    return vastaus.status(400).json({ 
       error: 'number missing' 
+    })
+  }
+
+  if ((persons.map(person => person.name)).includes(runko.name)) {
+    return vastaus.status(400).json({ 
+      error: 'name must be unique' 
     })
   }
 
