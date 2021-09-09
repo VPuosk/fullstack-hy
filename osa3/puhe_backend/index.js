@@ -1,7 +1,9 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(function (tokens, req, res) {
   if (tokens.method(req,res) == "POST") {
@@ -128,6 +130,6 @@ app.delete('/api/persons/:id', (pyynto, vastaus) => {
   vastaus.status(204).end()
 })
 
-const port = 3001
+const port = process.env.PORT || 3001
 app.listen(port)
 console.log(`Server running on port ${port}`)
