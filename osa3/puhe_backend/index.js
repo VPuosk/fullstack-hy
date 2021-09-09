@@ -42,7 +42,6 @@ app.get('/info', (pyynto, vastaus) => {
   )
 })
 
-/*
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
@@ -53,7 +52,6 @@ app.get('/api/persons/:id', (request, response) => {
     response.status(404).end()
   }
 })
-*/
 
 const port = 3001
 app.listen(port)
