@@ -53,6 +53,14 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
+app.delete('/api/persons/:id', (pyynto, vastaus) => {
+  const id = Number(pyynto.params.id)
+  console.log(id)
+  persons = persons.filter(person => person.id !== id)
+
+  vastaus.status(204).end()
+})
+
 const port = 3001
 app.listen(port)
 console.log(`Server running on port ${port}`)
