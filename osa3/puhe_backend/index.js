@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
   {
     "name": "Arto Hellas",
@@ -23,6 +25,15 @@ let persons = [
     "id": 4
   }
 ]
+
+const getNewID = () => {
+  const varatut = persons.map(person => Number(person.id))
+  let rnd = Math.floor(Math.random()*100000) + 1
+  while (varatut.includes(rnd)) {
+    rnd = Math.floor(Math.random()*100000)+1
+  }
+  return rnd
+}
 
 app.get('/', (req, res) => {
   res.send('<h3>Phonebook backend</h3>')
@@ -51,6 +62,35 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
+})
+
+app.post('/api/persons', (pyynto, vastaus) => {
+  const runko = pyynto.body
+
+  console.log(pyynto)
+  console.log(runko)
+
+  if (!runko.name) {
+    return response.status(400).json({ 
+      error: 'name missing' 
+    })
+  }
+
+  if (!runko.number) {
+    return response.status(400).json({ 
+      error: 'number missing' 
+    })
+  }
+
+  const person = {
+    name: runko.name,
+    number: runko.number,
+    id: getNewID(),
+  }
+
+  persons = persons.concat(person)
+
+  vastaus.json(person)
 })
 
 app.delete('/api/persons/:id', (pyynto, vastaus) => {
