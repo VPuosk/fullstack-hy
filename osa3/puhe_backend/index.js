@@ -32,6 +32,16 @@ app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
+app.get('/info', (pyynto, vastaus) => {
+  const aika = new Date()
+  vastaus.send(
+    `<div>
+      <p>Phonebook has info for ${persons.length} people</p>
+      <p>${aika}</p>
+    </div>`
+  )
+})
+
 /*
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
