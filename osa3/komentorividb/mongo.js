@@ -15,6 +15,7 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
     name: String,
     number: String,
+    id: Number,
 })
 
 const Person = mongoose.model('Person', personSchema)
@@ -37,6 +38,7 @@ const lisääTauluun = (nimi, numero) => {
     const person = new Person({
         name: `${nimi}`,
         number: `${numero}`,
+        id: (Math.floor(Math.random()*100000) + 1),
     })
 
     //console.log(person)
