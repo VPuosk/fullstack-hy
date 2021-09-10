@@ -84,13 +84,17 @@ app.get('/info', (pyynto, vastaus) => {
 
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
+  Person.findById(request.params.id).then(person => {
+    response.json(person)
+  })
+  /*const person = persons.find(person => person.id === id)
 
   if (person) {
     response.json(person)
   } else {
     response.status(404).end()
   }
+  */
 })
 
 app.post('/api/persons', (pyynto, vastaus) => {
@@ -117,15 +121,21 @@ app.post('/api/persons', (pyynto, vastaus) => {
     })
   }
 
-  const person = {
+  const person = new Person({
     name: runko.name,
     number: runko.number,
     id: getNewID(),
-  }
+  })
 
-  persons = persons.concat(person)
+  person.save().then(result => {
+    //console.log(result)
+    //mongoose.connection.close()
+    vastaus.json(result)
+  })
 
-  vastaus.json(person)
+  //persons = persons.concat(person)
+
+  //vastaus.json(person)
 })
 
 app.delete('/api/persons/:id', (pyynto, vastaus) => {
