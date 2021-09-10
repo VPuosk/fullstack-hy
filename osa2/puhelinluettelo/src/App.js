@@ -64,6 +64,8 @@ const App = () => {
           .update(personObj.id, personObjAlt)
           .then(response => {
             setPersons(persons.map(person => person.id !== personObj.id ? person : response))
+            setNewName('')
+            setNewNumber('')
             asetaVirheIlmoitus(
               `Success: Number of ${response.name} has been changed`
             )
@@ -79,6 +81,8 @@ const App = () => {
               asetaVirheIlmoitus(null)
             }, 3000)
             setPersons(persons.filter(person => person.name !== newName))
+            setNewName('')
+            setNewNumber('')
           })
       }
     } else {

@@ -74,16 +74,21 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/info', (pyynto, vastaus) => {
   const aika = new Date()
-  vastaus.send(
-    `<div>
-      <p>Phonebook has info for ${persons.length} people</p>
-      <p>${aika}</p>
-    </div>`
-  )
+  Person.estimatedDocumentCount()
+    .then(response => {
+      //console.log(response)
+      vastaus.send(
+        `<div>
+          <p>Phonebook has info for ${response} people</p>
+          <p>${aika}</p>
+        </div>`
+      )
+    })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
+app.get('/api/persons/:id', (request, response, next) => {
+  //const id = Number(request.params.id)
+  //console.log('check -1: ', request.params.id)
   Person.findById(request.params.id)
     .then(person => {
       if(person) {
@@ -93,8 +98,8 @@ app.get('/api/persons/:id', (request, response) => {
       }
     })
     .catch(error => {
-      console.log(error)
-      response.status(400).send({ error: 'bad id'})
+      //console.log(error.name)
+      next(error)
     })
   /*const person = persons.find(person => person.id === id)
 
@@ -106,28 +111,18 @@ app.get('/api/persons/:id', (request, response) => {
   */
 })
 
-app.post('/api/persons', (pyynto, vastaus) => {
+app.post('/api/persons', (pyynto, vastaus, next) => {
   const runko = pyynto.body
 
   //console.log(pyynto)
   //console.log(runko)
 
   if (!runko.name) {
-    return vastaus.status(400).json({ 
-      error: 'name missing' 
-    })
+    throw new Error('NoName')
   }
 
   if (!runko.number) {
-    return vastaus.status(400).json({ 
-      error: 'number missing' 
-    })
-  }
-
-  if ((persons.map(person => person.name)).includes(runko.name)) {
-    return vastaus.status(400).json({ 
-      error: 'name must be unique' 
-    })
+    throw new Error('NoNumber')
   }
 
   const person = new Person({
@@ -147,14 +142,12 @@ app.post('/api/persons', (pyynto, vastaus) => {
   //vastaus.json(person)
 })
 
-app.delete('/api/persons/:id', (pyynto, vastaus) => {
+app.delete('/api/persons/:id', (pyynto, vastaus, next) => {
   Person.findByIdAndRemove(pyynto.params.id)
     .then(result => {
       vastaus.status(204).end()
     })
-    .catch(error => {
-      vastaus.status(400).send({ error: 'bad id'})
-    })
+    .catch(error => next(error))
   /*
   const id = Number(pyynto.params.id)
   console.log(id)
@@ -163,6 +156,53 @@ app.delete('/api/persons/:id', (pyynto, vastaus) => {
   vastaus.status(204).end()
   */
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+// olemattomien osoitteiden käsittely
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+  //console.log(error)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send( { error: 'malformatted id'})
+  }
+
+  if (error.message === 'NoName') {
+    return response.status(400).send( { error: 'Name is missing'})
+  }
+
+  if (error.message === 'NoNumber') {
+    return response.status(400).send( { error: 'Number is missing'})
+  }
+
+  if (error.message === 'UniqueNamesOnly') {
+    return response.status(400).send( { error: 'Only unique names are allows'})
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const port = process.env.PORT || 3001
 app.listen(port)
