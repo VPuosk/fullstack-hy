@@ -84,9 +84,18 @@ app.get('/info', (pyynto, vastaus) => {
 
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  Person.findById(request.params.id).then(person => {
-    response.json(person)
-  })
+  Person.findById(request.params.id)
+    .then(person => {
+      if(person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'bad id'})
+    })
   /*const person = persons.find(person => person.id === id)
 
   if (person) {
@@ -139,11 +148,20 @@ app.post('/api/persons', (pyynto, vastaus) => {
 })
 
 app.delete('/api/persons/:id', (pyynto, vastaus) => {
+  Person.findByIdAndRemove(pyynto.params.id)
+    .then(result => {
+      vastaus.status(204).end()
+    })
+    .catch(error => {
+      vastaus.status(400).send({ error: 'bad id'})
+    })
+  /*
   const id = Number(pyynto.params.id)
   console.log(id)
   persons = persons.filter(person => person.id !== id)
 
   vastaus.status(204).end()
+  */
 })
 
 const port = process.env.PORT || 3001
