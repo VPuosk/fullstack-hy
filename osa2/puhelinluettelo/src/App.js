@@ -107,8 +107,9 @@ const App = () => {
           }, 3000)
         })
         .catch(error => {
+          //console.log(error.response.data.error)
           asetaVirheIlmoitus(
-            `Error: ${personObj.name} has not been added`
+            error.response.data.error
           )
           setTimeout(() => {
             asetaVirheIlmoitus(null)
