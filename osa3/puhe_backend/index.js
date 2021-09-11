@@ -52,15 +52,6 @@ let persons = [
   }
 ]
 
-const getNewID = () => {
-  const varatut = persons.map(person => Number(person.id))
-  let rnd = Math.floor(Math.random()*100000) + 1
-  while (varatut.includes(rnd)) {
-    rnd = Math.floor(Math.random()*100000)+1
-  }
-  return rnd
-}
-
 app.get('/', (req, res) => {
   res.send('<h3>Phonebook backend</h3>')
 })
@@ -127,15 +118,14 @@ app.post('/api/persons', (pyynto, vastaus, next) => {
 
   const person = new Person({
     name: runko.name,
-    number: runko.number,
-    id: getNewID(),
+    number: runko.number
   })
 
-  person.save().then(result => {
-    //console.log(result)
-    //mongoose.connection.close()
-    vastaus.json(result)
-  })
+  person.save()
+    .then(result => {
+      vastaus.json(result)
+    })
+    .catch(error => next(error))
 
   //persons = persons.concat(person)
 
@@ -185,18 +175,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send( { error: 'malformatted id'})
-  }
-
-  if (error.message === 'NoName') {
-    return response.status(400).send( { error: 'Name is missing'})
-  }
-
-  if (error.message === 'NoNumber') {
-    return response.status(400).send( { error: 'Number is missing'})
-  }
-
-  if (error.message === 'UniqueNamesOnly') {
-    return response.status(400).send( { error: 'Only unique names are allows'})
+  } else if ( error.name === 'ValidationError' ) {
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
