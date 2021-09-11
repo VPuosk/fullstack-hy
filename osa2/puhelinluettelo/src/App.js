@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 //import axios from 'axios'
 import Phonebook from './components/Phonebook'
@@ -22,11 +24,11 @@ const HakuPäivitin = (props) => {
 
 const App = () => {
   const [ persons, setPersons] = useState([
-    { 
+    {
       name: 'Arto Hellas',
       number: '040-1231244'
     }
-  ]) 
+  ])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterer, setFilterer ] = useState('')
@@ -48,17 +50,17 @@ const App = () => {
   const tapahtumanKäsittelijä = (tapahtuma) => {
     tapahtuma.preventDefault()
     // console.log('Jottai tapahtusi', tapahtuma.target)
-    
+
     // tuplausta varten tarvitaan nimilista
     const nimilista = persons.map(person => person.name)
-    
+
     // estetään tuplaus
     if (nimilista.includes(newName)) {
       //alert(`${newName} is already added to phonebook`)
       //console.log('tuplaus')
       if (window.confirm(`${newName} is already added to phonebook, replace the old number?`)) {
         const personObj = persons.find(person => person.name === newName)
-        const personObjAlt = {...personObj, number: newNumber}
+        const personObjAlt = { ...personObj, number: newNumber }
 
         phonebookService
           .update(personObj.id, personObjAlt)
@@ -73,7 +75,7 @@ const App = () => {
               asetaVirheIlmoitus(null)
             }, 3000)
           })
-          .catch(error => {
+          .catch(() => {
             asetaVirheIlmoitus(
               `Error: ${newName} had already been removed`
             )
@@ -101,7 +103,6 @@ const App = () => {
           asetaVirheIlmoitus(
             `Success: ${personObj.name} has been added`
           )
-          
           setTimeout(() => {
             asetaVirheIlmoitus(null)
           }, 3000)

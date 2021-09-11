@@ -7,8 +7,8 @@ const getAll = () => {
 }
 
 const create = newObject => {
-    const request = axios.post(baseUrl, newObject)
-    return request.then(response => response.data)
+  const request = axios.post(baseUrl, newObject)
+  return request.then(response => response.data)
 }
 
 const update = (id, newObject) => {
@@ -17,19 +17,20 @@ const update = (id, newObject) => {
 }
 
 const removeNumber = (id) => {
-    axios.delete(`${baseUrl}/${id}`)
+  axios.delete(`${baseUrl}/${id}`)
 }
 
-//export default { 
-//  getAll: getAll, 
-//  create: create, 
-//  update: update 
+//export default {
+//  getAll: getAll,
+//  create: create,
+//  update: update
 //}
 
 const puhelin = {
-    getAll: getAll, 
-    create: create, 
-    update: update,
-    removeNumber: removeNumber
-};
-export default puhelin;
+  getAll: getAll,
+  create: create,
+  update: update,
+  removeNumber: removeNumber
+}
+
+export default puhelin

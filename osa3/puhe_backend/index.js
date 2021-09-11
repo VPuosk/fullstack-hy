@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 app.use(morgan(function (tokens, req, res) {
-  if (tokens.method(req,res) == "POST") {
+  if (tokens.method(req,res) === 'POST') {
     const data = JSON.stringify(req.body)
     return [
       tokens.method(req, res),
@@ -28,29 +28,6 @@ app.use(morgan(function (tokens, req, res) {
     tokens['response-time'](req, res), 'ms'
   ].join(' ')
 }))
-
-let persons = [
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-  },
-  {
-    "name": "Dan Abramov",
-    "number": "12-43-234345",
-    "id": 3
-  },
-  {
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-  }
-]
 
 app.get('/', (req, res) => {
   res.send('<h3>Phonebook backend</h3>')
@@ -134,7 +111,7 @@ app.post('/api/persons', (pyynto, vastaus, next) => {
 
 app.delete('/api/persons/:id', (pyynto, vastaus, next) => {
   Person.findByIdAndRemove(pyynto.params.id)
-    .then(result => {
+    .then(() => {
       vastaus.status(204).end()
     })
     .catch(error => next(error))
@@ -174,7 +151,7 @@ const errorHandler = (error, request, response, next) => {
   //console.log(error)
 
   if (error.name === 'CastError') {
-    return response.status(400).send( { error: 'malformatted id'})
+    return response.status(400).send( { error: 'malformatted id' })
   } else if ( error.name === 'ValidationError' ) {
     return response.status(400).json({ error: error.message })
   }
