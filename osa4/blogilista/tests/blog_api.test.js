@@ -31,6 +31,28 @@ describe('API tests -', () => {
     const id = response.body[0].id
     expect(id).toBeDefined()
   })
+
+  test('blogs can be posted', async () => {
+    const blog = {
+      title: 'testi postin lisäämisestä',
+      author: 'Kokeilija',
+      url: 'http://www.google.com',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(helper.defaultBlogs.length + 1)
+
+    expect(response.body.map(blog => blog.title)).toContain(
+      'testi postin lisäämisestä'
+    )
+  })
 })
 
 afterAll(() => {
