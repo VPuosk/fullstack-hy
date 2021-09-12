@@ -33,8 +33,72 @@ const favoriteBlogs = (blogs) => {
   return topBlog
 }
 
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const arrayBloggers = []
+
+  blogs.map(blog => {
+    const id = arrayBloggers.map(blogger => blogger.author).indexOf(blog.author)
+    if (id !== -1) {
+      arrayBloggers[id].blogs += 1
+    } else {
+      const blogger = {
+        author: blog.author,
+        blogs: 1
+      }
+      arrayBloggers.push(blogger)
+    }
+  })
+
+  let topBlogger = arrayBloggers[0]
+
+  arrayBloggers.map(blogger => {
+    if (blogger.blogs > topBlogger.blogs) {
+      topBlogger = blogger
+    }
+  })
+
+  return topBlogger
+}
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+
+  const arrayBloggers = []
+
+  blogs.map(blog => {
+    const id = arrayBloggers.map(blogger => blogger.author).indexOf(blog.author)
+    if (id !== -1) {
+      arrayBloggers[id].likes += blog.likes
+    } else {
+      const blogger = {
+        author: blog.author,
+        likes: blog.likes
+      }
+      arrayBloggers.push(blogger)
+    }
+  })
+
+  let topBlogger = arrayBloggers[0]
+
+  arrayBloggers.map(blogger => {
+    if (blogger.likes > topBlogger.likes) {
+      topBlogger = blogger
+    }
+  })
+
+  return topBlogger
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlogs
+  favoriteBlogs,
+  mostBlogs,
+  mostLikes
 }
