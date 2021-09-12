@@ -14,90 +14,146 @@ beforeEach(async () => {
 })
 
 describe('API tests -', () => {
-  test('blogs are returned as json', async () => {
-    await api
-      .get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+  describe('Generic tests', () => {
+    test('blogs are returned as json', async () => {
+      await api
+        .get('/api/blogs')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+    })
+
+    test('number of blogs returned', async () => {
+      const response = await api.get('/api/blogs')
+      expect(response.body).toHaveLength(helper.defaultBlogs.length)
+    })
+
+    test('blogs have id field', async () => {
+      const response = await api.get('/api/blogs')
+      const id = response.body[0].id
+      expect(id).toBeDefined()
+    })
   })
 
-  test('number of blogs returned', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(helper.defaultBlogs.length)
+  describe('POST tests', () => {
+
+    test('blogs can be posted', async () => {
+      const blog = {
+        title: 'testi postin lisäämisestä',
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 1
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const response = await api.get('/api/blogs')
+      expect(response.body).toHaveLength(helper.defaultBlogs.length + 1)
+
+      expect(response.body.map(blog => blog.title)).toContain(
+        'testi postin lisäämisestä'
+      )
+    })
+
+    test('like field must default to zero', async () => {
+      const blog = {
+        title: 'testi tykkäyskentän nollauksesta',
+        author: 'Kokeilija',
+        url: 'http://www.google.com'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const response = await api.get('/api/blogs')
+
+      const likes = response.body.filter(blog => blog.title.includes('testi tykkäyskentän nollauksesta'))[0].likes
+
+      expect(likes).toBeDefined()
+    })
+
+    test('no title field', async () => {
+      const blog = {
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 2
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(400)
+    })
+
+    test('no url field', async () => {
+      const blog = {
+        title: 'Jotain hassua',
+        author: 'Kokeilija',
+        likes: 1
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(blog)
+        .expect(400)
+    })
+  })
+  describe('DELETE tests', () => {
+    test('checking number of posts', async () => {
+      const blog = {
+        title: 'poistettava posti',
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 1
+      }
+      //step 1 lisätään posti
+      await api.post('/api/blogs').send(blog)
+
+      //step 2 tarkistetaan lukumäärä ja haetaan ID
+      const result = await api.get('/api/blogs')
+      expect(result.body).toHaveLength(helper.defaultBlogs.length + 1)
+      const id = result.body.filter(blog => blog.title.includes('poistettava posti'))[0].id
+
+      //step 3 - poistetaan posti ja varmistetaan määrä ja ettei ko sisältöä enää ole
+      await api.delete(`/api/blogs/${id}`)
+      const vastaus = await api.get('/api/blogs')
+      expect(vastaus.body).toHaveLength(helper.defaultBlogs.length)
+      const lukumäärä = vastaus.body.filter(blog => blog.title.includes('poistettava posti')).length
+      expect(lukumäärä).toBe(0)
+    })
   })
 
-  test('blogs have id field', async () => {
-    const response = await api.get('/api/blogs')
-    const id = response.body[0].id
-    expect(id).toBeDefined()
-  })
+  describe('PUT tests', () => {
+    test('modify amount of likes', async () => {
+      const blog = {
+        title: 'testi postin lisäämisestä',
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 1
+      }
 
-  test('blogs can be posted', async () => {
-    const blog = {
-      title: 'testi postin lisäämisestä',
-      author: 'Kokeilija',
-      url: 'http://www.google.com',
-      likes: 1
-    }
+      // step 1 - lisätään tämä
+      await api.post('/api/blogs').send(blog)
+      const result = await api.get('/api/blogs')
+      const id = result.body.filter(blog => blog.title.includes('testi postin lisäämisestä'))[0].id
+      const ekaLikes = result.body.filter(blog => blog.title.includes('testi postin lisäämisestä'))[0].likes
+      expect(ekaLikes).toBe(1)
 
-    await api
-      .post('/api/blogs')
-      .send(blog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+      // step 2 - muokataan tätä
+      blog.likes = 5
+      await api.put(`/api/blogs/${id}`).send(blog)
 
-    const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(helper.defaultBlogs.length + 1)
-
-    expect(response.body.map(blog => blog.title)).toContain(
-      'testi postin lisäämisestä'
-    )
-  })
-
-  test('like field must default to zero', async () => {
-    const blog = {
-      title: 'testi tykkäyskentän nollauksesta',
-      author: 'Kokeilija',
-      url: 'http://www.google.com'
-    }
-
-    await api
-      .post('/api/blogs')
-      .send(blog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
-
-    const response = await api.get('/api/blogs')
-
-    const likes = response.body.filter(blog => blog.title.includes('testi tykkäyskentän nollauksesta'))[0].likes
-
-    expect(likes).toBeDefined()
-  })
-
-  test('no title field', async () => {
-    const blog = {
-      author: 'Kokeilija',
-      url: 'http://www.google.com',
-      likes: 2
-    }
-
-    await api
-      .post('/api/blogs')
-      .send(blog)
-      .expect(400)
-  })
-
-  test('no url field', async () => {
-    const blog = {
-      title: 'Jotain hassua',
-      author: 'Kokeilija',
-      likes: 1
-    }
-
-    await api
-      .post('/api/blogs')
-      .send(blog)
-      .expect(400)
+      // step 3 - tarkistetaan tulos
+      const vastaus = await api.get('/api/blogs')
+      const likes = vastaus.body.filter(blog => blog.title.includes('testi postin lisäämisestä'))[0].likes
+      expect(likes).toBe(5)
+    })
   })
 })
 
