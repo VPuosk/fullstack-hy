@@ -25,6 +25,12 @@ describe('API tests -', () => {
     const response = await api.get('/api/blogs')
     expect(response.body).toHaveLength(helper.defaultBlogs.length)
   })
+
+  test('blogs have id field', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[0].id
+    expect(id).toBeDefined()
+  })
 })
 
 afterAll(() => {
