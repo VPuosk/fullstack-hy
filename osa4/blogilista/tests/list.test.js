@@ -63,3 +63,60 @@ describe('totalLikes', () => {
     expect(result).toBe(0)
   })
 })
+
+describe('favBlog', () => {
+  test('test many', () =>  {
+    const blogs = [
+      {
+        _id: 'AAAAAABBBBB',
+        title: 'Testi 1',
+        author: 'DEVES',
+        url: 'dev/null',
+        likes: 15,
+        __v: 0
+      },
+      {
+        _id: 'BBBBBCCCCC',
+        title: 'Testi 1',
+        author: 'DEVES',
+        url: 'dev/null',
+        likes: 5,
+        __v: 0
+      },
+      {
+        _id: 'CCCCCDDDDD',
+        title: 'Testi 3',
+        author: 'DEVES',
+        url: 'dev/null',
+        likes: 25,
+        __v: 0
+      },
+    ]
+
+    const result = listHelper.favoriteBlogs(blogs)
+    expect(result).toEqual(blogs[2])
+  })
+
+  test('test one', () =>  {
+    const blogs = [
+      {
+        _id: 'AAAAAABBBBB',
+        title: 'Testi 1',
+        author: 'DEVES',
+        url: 'dev/null',
+        likes: 15,
+        __v: 0
+      },
+    ]
+
+    const result = listHelper.favoriteBlogs(blogs)
+    expect(result).toEqual(blogs[0])
+  })
+
+  test('none', () =>  {
+    const blogs = []
+
+    const result = listHelper.favoriteBlogs(blogs)
+    expect(result).toEqual(null)
+  })
+})
