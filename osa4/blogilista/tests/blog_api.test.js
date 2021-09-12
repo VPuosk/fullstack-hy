@@ -73,6 +73,32 @@ describe('API tests -', () => {
 
     expect(likes).toBeDefined()
   })
+
+  test('no title field', async () => {
+    const blog = {
+      author: 'Kokeilija',
+      url: 'http://www.google.com',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(400)
+  })
+
+  test('no url field', async () => {
+    const blog = {
+      title: 'Jotain hassua',
+      author: 'Kokeilija',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(400)
+  })
 })
 
 afterAll(() => {
