@@ -4,7 +4,7 @@
   "description": "Part 4 exercise",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "eslint:init": "node_modules/.bin/eslint --init",
     "lint": "eslint .",
     "start": "node index.js",
@@ -14,6 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "eslint": "^7.32.0",
+    "jest": "^27.1.1",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
@@ -21,5 +22,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^5.13.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
