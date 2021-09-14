@@ -11,15 +11,12 @@ userRouter.post('/', async (request, response) => {
   // koodi jatkuu
   const saltRnds = 10
   const passwdHash = await bcrypt.hash(body.password, saltRnds)
-  console.log(passwdHash)
-
   const user = new User({
     username: body.username,
     name: body.name,
     blogs: [],
     passwordHash: passwdHash
   })
-
   const newUser = await user.save()
   response.status(201).json(newUser.toJSON())
 })

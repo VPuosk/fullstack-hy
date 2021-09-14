@@ -13,6 +13,11 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user
+
+  if (request.token === null) {
+    return response.status(401).json({ error: 'trying to add blog without authorization (token)' })
+  }
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -48,13 +53,26 @@ blogRouter.delete('/:id', userExtractor, async (request, response) => {
   }
 })
 
-blogRouter.put('/:id', async (request, response) => {
+blogRouter.put('/:id', userExtractor, async (request, response) => {
+  const user = request.user
+  const oldBlog = await Blog.findById(request.params.id)
+
+  if (oldBlog === null) {
+    return response.status(400).json({ error: 'unknown blog entry' })
+  }
+
+  if (oldBlog.user.toString() !== user._id.toString()) {
+    return response.status(401).json({ error: 'trying to edit blog by another user' })
+  }
+
   const blog = {
     title: request.body.title,
     author: request.body.author,
+    user: oldBlog.user,
     url: request.body.url,
     likes: request.body.likes === undefined ? 0 : request.body.likes
   }
+
   if ((blog.title) && (blog.url)) {
     const result = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
     response.status(200).json(result.toJSON())

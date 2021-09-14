@@ -15,7 +15,7 @@ const mongoUrl = config.MONGODB_URI
 
 logger.info('connecting to MONGODB')
 
-mongoose.connect(mongoUrl)
+mongoose.connect(mongoUrl, { useNewUrlParser: true })
   .then(() => {
     logger.info('connected')
   })

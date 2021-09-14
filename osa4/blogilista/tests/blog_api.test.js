@@ -7,6 +7,7 @@ const helper = require('./test_helper')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -44,8 +45,24 @@ describe('API tests -', () => {
         likes: 1
       }
 
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+        .expect(201)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+        .expect(200)
+
       await api
         .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
         .send(blog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -58,6 +75,50 @@ describe('API tests -', () => {
       )
     })
 
+    test('trying to add blog without login', async () => {
+      const blog = {
+        title: 'testi postin lisäämisestä',
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 1
+      }
+
+      await api
+        .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .send(blog)
+        .expect(401)
+    })
+
+    test('trying to add blog without token', async () => {
+      const blog = {
+        title: 'testi postin lisäämisestä',
+        author: 'Kokeilija',
+        url: 'http://www.google.com',
+        likes: 1
+      }
+
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+        .expect(201)
+
+      await api
+        .post('/api/login')
+        .send(testUser)
+        .expect(200)
+
+      await api
+        .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .send(blog)
+        .expect(401)
+    })
+
     test('like field must default to zero', async () => {
       const blog = {
         title: 'testi tykkäyskentän nollauksesta',
@@ -65,8 +126,24 @@ describe('API tests -', () => {
         url: 'http://www.google.com'
       }
 
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+        .expect(201)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+        .expect(200)
+
       await api
         .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
         .send(blog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -85,8 +162,24 @@ describe('API tests -', () => {
         likes: 2
       }
 
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+        .expect(201)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+        .expect(200)
+
       await api
         .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
         .send(blog)
         .expect(400)
     })
@@ -98,8 +191,24 @@ describe('API tests -', () => {
         likes: 1
       }
 
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+        .expect(201)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+        .expect(200)
+
       await api
         .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
         .send(blog)
         .expect(400)
     })
@@ -113,7 +222,23 @@ describe('API tests -', () => {
         likes: 1
       }
       //step 1 lisätään posti
-      await api.post('/api/blogs').send(blog)
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+
+      await api
+        .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
+        .send(blog)
 
       //step 2 tarkistetaan lukumäärä ja haetaan ID
       const result = await api.get('/api/blogs')
@@ -121,7 +246,10 @@ describe('API tests -', () => {
       const id = result.body.filter(blog => blog.title.includes('poistettava posti'))[0].id
 
       //step 3 - poistetaan posti ja varmistetaan määrä ja ettei ko sisältöä enää ole
-      await api.delete(`/api/blogs/${id}`)
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set('authorization', `bearer ${userResponse.body.token}`)
+
       const vastaus = await api.get('/api/blogs')
       expect(vastaus.body).toHaveLength(helper.defaultBlogs.length)
       const lukumäärä = vastaus.body.filter(blog => blog.title.includes('poistettava posti')).length
@@ -139,7 +267,24 @@ describe('API tests -', () => {
       }
 
       // step 1 - lisätään tämä
-      await api.post('/api/blogs').send(blog)
+      const testUser = helper.defaultUsers[0]
+
+      await User.deleteMany({})
+
+      await api
+        .post('/api/users')
+        .send(testUser)
+
+      const userResponse = await api
+        .post('/api/login')
+        .send(testUser)
+
+      await api
+        .post('/api/blogs')
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
+        .send(blog)
+
       const result = await api.get('/api/blogs')
       const id = result.body.filter(blog => blog.title.includes('testi postin lisäämisestä'))[0].id
       const ekaLikes = result.body.filter(blog => blog.title.includes('testi postin lisäämisestä'))[0].likes
@@ -147,7 +292,12 @@ describe('API tests -', () => {
 
       // step 2 - muokataan tätä
       blog.likes = 5
-      await api.put(`/api/blogs/${id}`).send(blog)
+      await api
+        .put(`/api/blogs/${id}`)
+        .set('Content-Type',  'application/json')
+        .set('authorization', `bearer ${userResponse.body.token}`)
+        .send(blog)
+        .expect(200)
 
       // step 3 - tarkistetaan tulos
       const vastaus = await api.get('/api/blogs')

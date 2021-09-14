@@ -1,4 +1,4 @@
-//const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const app = require('../app')
@@ -6,19 +6,35 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const User = require('../models/blog')
+const User = require('../models/user')
 
-describe('User API tests', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
+//jest.useFakeTimers()
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
+beforeEach(async () => {
+  await User.deleteMany({})
 
-    await user.save()
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({
+    name: 'groot',
+    username: 'root',
+    blogs: [],
+    passwordHash: passwordHash
   })
 
-  test('creation test', async () => {
+  await user.save()
+})
+
+describe('User API tests', () => {
+
+  test('something exists', async () => {
+    const result = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(result.body).toHaveLength(1)
+  })
+
+  test('user failing creation test', async () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
@@ -38,4 +54,27 @@ describe('User API tests', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
+
+  test('user creation test', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'rooter',
+      name: 'Superuser',
+      password: 'salainen',
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+  })
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
