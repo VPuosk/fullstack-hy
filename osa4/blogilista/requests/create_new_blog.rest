@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "TESTIPOSTI",
+    "title": "TESTIPOSTI nro 2",
     "author": "Devteam",
     "url": "dev/null",
-    "likes": 500
+    "likes": 2
 }
