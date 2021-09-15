@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+
 import blogService from './services/blogs'
-import loginService from './services/login' 
+import loginService from './services/login'
+import './index.css'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -59,9 +62,13 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setErrorMessage( 'Note: Logging in successful' )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 2500)
     } catch (exception) {
       console.log('Bad credentials')
-      setErrorMessage('Wrong credentials')
+      setErrorMessage( 'Error: Wrong credentials' )
       setTimeout(() => {
         setErrorMessage(null)
       }, 2500)
@@ -84,11 +91,16 @@ const App = () => {
     setBlogTitle('')
     setBlogAuthor('')
     setBlogURL('')
+    setErrorMessage( `Note: Added a new blog:\n${response.title} by ${response.author}` )
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 2500)
   }
 
   if (user === null) {
     return (
       <div>
+        <Notification notification={errorMessage} />
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -117,6 +129,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification notification={errorMessage} />
       <h4>Logged in user: {user.name}</h4>
       <form onClick={handleLogout}>
         <button type="submit">Logout</button>
