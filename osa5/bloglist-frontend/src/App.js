@@ -9,6 +9,7 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
+import Blogs from './components/Blogs'
 
 
 const App = () => {
@@ -79,9 +80,12 @@ const App = () => {
     }, 2500)
   }
 
-  const handleAddBlogLike = async (blogAndIDObj) => {
-    const response = await blogService.updateExisting(blogAndIDObj)
-    setBlogs(blogs.map(blog => blog.id !== blogAndIDObj.id ? blog : blogAndIDObj.blog))
+  const handleAddBlogLike = async (id) => {
+    const blog = blogs.find(blog => blog.id === id)
+    const newBlog = { ...blog, likes: blog.likes + 1 }
+
+    const response = await blogService.updateExisting(id, newBlog)
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
     setErrorMessage( `Note: Liked a new blog:\n${response.title} by ${response.author}` )
     setTimeout(() => {
       setErrorMessage(null)
@@ -128,13 +132,7 @@ const App = () => {
         <button type="submit">Logout</button>
       </form>
       <h2>Blogs</h2>
-      {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeABlog={handleAddBlogLike}
-        />
-      )}
+      <Blogs blogs={blogs} likeABlog={handleAddBlogLike}/>
       <h3>Post a new blog</h3>
       {blogForm()}
     </div>

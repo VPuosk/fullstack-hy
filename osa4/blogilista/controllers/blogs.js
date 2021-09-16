@@ -54,16 +54,18 @@ blogRouter.delete('/:id', userExtractor, async (request, response) => {
 })
 
 blogRouter.put('/:id', userExtractor, async (request, response) => {
-  const user = request.user
+  //const user = request.user
   const oldBlog = await Blog.findById(request.params.id)
 
   if (oldBlog === null) {
     return response.status(400).json({ error: 'unknown blog entry' })
   }
 
+  /*
   if (oldBlog.user.toString() !== user._id.toString()) {
     return response.status(401).json({ error: 'trying to edit blog by another user' })
   }
+  */
 
   const blog = {
     title: request.body.title,

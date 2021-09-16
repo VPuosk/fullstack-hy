@@ -12,16 +12,7 @@ const Blog = ({ blog, likeABlog }) => {
 
   const likeThisBlog = (event) => {
     event.preventDefault()
-    likeABlog({
-      id: blog.id,
-      blog: {
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        user: blog.user.id,
-        likes: blog.likes + 1
-      }
-    })
+    likeABlog(blog.id)
   }
 
   const blogStyle = {
