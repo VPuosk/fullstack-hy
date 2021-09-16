@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({blog}) => {
+const Blog = ({ blog, likeABlog }) => {
 
   const [thisBlogVisibility, setThisBlogVisibility] = useState(false)
 
@@ -8,6 +8,20 @@ const Blog = ({blog}) => {
 
   const toggleShownStatus = () => {
     setThisBlogVisibility(!thisBlogVisibility)
+  }
+
+  const likeThisBlog = (event) => {
+    event.preventDefault()
+    likeABlog({
+      id: blog.id,
+      blog: {
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        user: blog.user.id,
+        likes: blog.likes + 1
+      }
+    })
   }
 
   const blogStyle = {
@@ -26,7 +40,7 @@ const Blog = ({blog}) => {
         <div>Title: {blog.title}<button onClick={toggleShownStatus}>Hide</button></div>
         <div>Author: {blog.author}</div>
         <div>Url: {blog.url}</div>
-        <div>Likes: {blog.likes}</div>
+        <div>Likes: {blog.likes} <button onClick={likeThisBlog}>Like this blog</button></div>
         <div>Added by: {blog.user.name}</div>
       </div>  
     </div>

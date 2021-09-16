@@ -79,6 +79,15 @@ const App = () => {
     }, 2500)
   }
 
+  const handleAddBlogLike = async (blogAndIDObj) => {
+    const response = await blogService.updateExisting(blogAndIDObj)
+    setBlogs(blogs.map(blog => blog.id !== blogAndIDObj.id ? blog : blogAndIDObj.blog))
+    setErrorMessage( `Note: Liked a new blog:\n${response.title} by ${response.author}` )
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 2500)
+  }
+
   const loginForm = () => {
     return (
       <div>
@@ -123,6 +132,7 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
+          likeABlog={handleAddBlogLike}
         />
       )}
       <h3>Post a new blog</h3>

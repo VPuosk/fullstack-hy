@@ -16,10 +16,22 @@ const createNew = async newBlog => {
   const config = {
     headers: { Authorization: token },
   }
-  
+
   const response = await axios.post(
     baseUrl,
     newBlog,
+    config
+  )
+  return response.data
+}
+
+const updateExisting = async newBlog => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.put(
+    `${baseUrl}/${newBlog.id}`,
+    newBlog.blog,
     config
   )
   return response.data
@@ -29,4 +41,5 @@ export default {
   getAll: getAll,
   createNew: createNew,
   setToken: setToken,
+  updateExisting: updateExisting
 }
