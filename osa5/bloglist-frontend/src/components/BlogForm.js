@@ -1,18 +1,40 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-const BlogForm = ({
-  handleBlogCreate,
-  handleBlogFormVisibility,
-  handleBlogTitleChange,
-  handleBlogAuthorChange,
-  handleBlogURLChange,
-  blogTitle,
-  blogAuthor,
-  blogURL
-}) => {
+const BlogForm = ({ createBlogPost }) => {
+
+  const [blogTitle, setBlogTitle] = useState('')
+  const [blogAuthor, setBlogAuthor] = useState('')
+  const [blogURL, setBlogURL] = useState('')
+
+  const handleBlogTitleChange = (event) => {
+    setBlogTitle(event.target.value)
+  }
+
+  const handleBlogAuthorChange = (event) => {
+    setBlogAuthor(event.target.value)
+  }
+
+  const handleBlogURLChange = (event) => {
+    setBlogURL(event.target.value)
+  }
+
+  const addBlogPost = (event) => {
+    event.preventDefault()
+    createBlogPost({
+      title: blogTitle,
+      author: blogAuthor,
+      url: blogURL,
+      likes: 0
+    })
+
+    setBlogAuthor('')
+    setBlogTitle('')
+    setBlogURL('')
+  }
+
   return (
     <div>
-      <form onSubmit={handleBlogCreate}>
+      <form onSubmit={addBlogPost}>
         <div>
           Title: 
           <input
@@ -40,7 +62,7 @@ const BlogForm = ({
             onChange={handleBlogURLChange}
           />
         </div>
-        <button type="submit" onClick={handleBlogFormVisibility}>Post the BLOG!</button>
+        <button type="submit">Post the BLOG!</button>
       </form>
     </div>
   )
