@@ -31,7 +31,10 @@ const Toggleable = React.forwardRef((props, ref) => {
 })
 
 Toggleable.propTypes = {
+  children: PropTypes.node.isRequired,
   buttonLabel: PropTypes.string.isRequired
 }
+
+Toggleable.displayName = 'Toggleable'
 
 export default Toggleable

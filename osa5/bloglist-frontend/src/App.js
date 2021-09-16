@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -22,7 +21,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -38,7 +37,7 @@ const App = () => {
 
   const handleLogout = async (event) => {
     event.preventDefault()
-    
+
     window.localStorage.removeItem('loggedBlogger')
     blogService.setToken(null)
     setUser(null)
@@ -52,7 +51,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogger', JSON.stringify(user)
       )
-      
+
       blogService.setToken(user.token)
       setUser(user)
       setErrorMessage( 'Note: Logging in successful' )
@@ -82,9 +81,11 @@ const App = () => {
 
   const handleAddBlogLike = async (id) => {
     const blog = blogs.find(blog => blog.id === id)
+    const writer = blog.user
     const newBlog = { ...blog, likes: blog.likes + 1 }
 
     const response = await blogService.updateExisting(id, newBlog)
+    response.user = writer
     setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
     setErrorMessage( `Note: Liked a blog:\n${response.title} by ${response.author}` )
     setTimeout(() => {
@@ -96,7 +97,7 @@ const App = () => {
     //const blog = blogs.find(blog => blog.id === id)
     await blogService.removeBlog(id)
     setBlogs(blogs.filter(blog => blog.id !== id))
-    setErrorMessage( `Note: Blog removed` )
+    setErrorMessage( 'Note: Blog removed' )
     setTimeout(() => {
       setErrorMessage(null)
     }, 2500)

@@ -6,7 +6,7 @@ const Notification = ({ notification }) => {
       <div className="noNotifications"></div>
     )
   }
-  
+
   console.log(notification.substring(0,5))
 
   if ( notification.substring(0,5) === 'Note:' ) {

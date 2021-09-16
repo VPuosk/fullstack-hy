@@ -30,7 +30,7 @@ const LoginForm = ({ handleLogin }) => {
       <form onSubmit={doLogin}>
         <div>
           Username
-            <input
+          <input
             type="text"
             value={username}
             name="Username"
@@ -39,7 +39,7 @@ const LoginForm = ({ handleLogin }) => {
         </div>
         <div>
           Password
-            <input
+          <input
             type="password"
             value={password}
             name="Password"
