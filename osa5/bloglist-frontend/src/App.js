@@ -86,7 +86,17 @@ const App = () => {
 
     const response = await blogService.updateExisting(id, newBlog)
     setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
-    setErrorMessage( `Note: Liked a new blog:\n${response.title} by ${response.author}` )
+    setErrorMessage( `Note: Liked a blog:\n${response.title} by ${response.author}` )
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 2500)
+  }
+
+  const handleRemoveBlog = async (id) => {
+    //const blog = blogs.find(blog => blog.id === id)
+    await blogService.removeBlog(id)
+    setBlogs(blogs.filter(blog => blog.id !== id))
+    setErrorMessage( `Note: Blog removed` )
     setTimeout(() => {
       setErrorMessage(null)
     }, 2500)
@@ -132,7 +142,12 @@ const App = () => {
         <button type="submit">Logout</button>
       </form>
       <h2>Blogs</h2>
-      <Blogs blogs={blogs} likeABlog={handleAddBlogLike}/>
+      <Blogs
+        blogs={blogs}
+        likeABlog={handleAddBlogLike}
+        removeABlog={handleRemoveBlog}
+        user={user}
+      />
       <h3>Post a new blog</h3>
       {blogForm()}
     </div>

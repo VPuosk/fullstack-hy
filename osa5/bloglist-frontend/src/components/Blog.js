@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, likeABlog }) => {
+const Blog = ({ blog, likeABlog, removeABlog, user }) => {
 
   const [thisBlogVisibility, setThisBlogVisibility] = useState(false)
 
@@ -13,6 +13,27 @@ const Blog = ({ blog, likeABlog }) => {
   const likeThisBlog = (event) => {
     event.preventDefault()
     likeABlog(blog.id)
+  }
+
+  const removeThisBlog = (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeABlog(blog.id)
+    }
+  }
+
+  const maybeRenderRemove = () => {
+    if (user.name === blog.user.name) {
+      return (
+        <>
+          <button onClick={removeThisBlog}>Remove</button>
+        </>
+      )
+    }
+    return (
+      <>
+      </>
+    )
   }
 
   const blogStyle = {
@@ -33,6 +54,7 @@ const Blog = ({ blog, likeABlog }) => {
         <div>Url: {blog.url}</div>
         <div>Likes: {blog.likes} <button onClick={likeThisBlog}>Like this blog</button></div>
         <div>Added by: {blog.user.name}</div>
+        {maybeRenderRemove()}
       </div>  
     </div>
   )

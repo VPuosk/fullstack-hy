@@ -1,7 +1,7 @@
 import React from 'react'
 import Blog from './Blog'
 
-const Blogs = ({ blogs, likeABlog }) => {
+const Blogs = ({ blogs, likeABlog, removeABlog, user }) => {
 
   blogs.sort((firstBlog, secondBlog) => secondBlog.likes - firstBlog.likes)
 
@@ -12,6 +12,8 @@ const Blogs = ({ blogs, likeABlog }) => {
           key={blog.id}
           blog={blog}
           likeABlog={likeABlog}
+          removeABlog={removeABlog}
+          user={user}
         />
       )}
     </div>
