@@ -13,8 +13,6 @@ import Toggleable from './components/Toggleable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
@@ -45,15 +43,10 @@ const App = () => {
     setUser(null)
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    console.log('logging in with', username, password)
+  const handleLogin = async (userObj) => {
 
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
+      const user = await loginService.login(userObj)
 
       window.localStorage.setItem(
         'loggedBlogger', JSON.stringify(user)
@@ -61,8 +54,6 @@ const App = () => {
       
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       setErrorMessage( 'Note: Logging in successful' )
       setTimeout(() => {
         setErrorMessage(null)
@@ -93,10 +84,6 @@ const App = () => {
       <div>
         <LoginForm
           handleLogin={handleLogin}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          username={username}
-          password={password}
         />
       </div>
     )

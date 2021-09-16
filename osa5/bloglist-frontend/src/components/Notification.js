@@ -18,7 +18,7 @@ const Notification = ({ notification }) => {
   } else {
     return (
       <div className="error">
-        {notification.substring(8)}
+        {notification.substring(7)}
       </div>
     )
   }
