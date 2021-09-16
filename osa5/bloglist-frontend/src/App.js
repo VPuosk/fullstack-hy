@@ -120,7 +120,10 @@ const App = () => {
       </form>
       <h2>Blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+        />
       )}
       <h3>Post a new blog</h3>
       {blogForm()}
