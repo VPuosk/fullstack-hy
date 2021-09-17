@@ -129,4 +129,36 @@ describe('<Blog >', () => {
       )
     })
   })
+
+  describe('like button test', () => {
+    test('press twice', () => {
+      const blog = {
+        title: 'Jokin lisätty blogi',
+        author: 'Muu',
+        url: 'devtools',
+        likes: 5,
+        user: {
+          name: 'Lisääjä'
+        }
+      }
+
+      const user = {
+        name: 'Lisääjä'
+      }
+
+      const mockLikeHandler = jest.fn()
+      const mockRemoveHandler = jest.fn()
+
+      const component = render(
+        <Blog blog={blog} likeABlog={mockLikeHandler} removeABlog={mockRemoveHandler} user={user} />
+      )
+
+      const button = component.getByText('Like this blog')
+
+      fireEvent.click(button)
+      fireEvent.click(button)
+
+      expect(mockLikeHandler.mock.calls).toHaveLength(2)
+    })
+  })
 })
