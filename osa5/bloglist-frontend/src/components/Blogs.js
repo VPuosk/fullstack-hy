@@ -8,7 +8,7 @@ const Blogs = ({ blogs, likeABlog, removeABlog, user }) => {
   blogs.sort((firstBlog, secondBlog) => secondBlog.likes - firstBlog.likes)
 
   return (
-    <div>
+    <div id='blogs_element'>
       {blogs.map(blog =>
         <Blog
           key={blog.id}
