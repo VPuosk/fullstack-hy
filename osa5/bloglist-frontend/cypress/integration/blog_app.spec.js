@@ -59,7 +59,7 @@ describe('Blog app', function() {
       // ...
     })
 
-    it.only('A blog can be liked', function() {
+    it('A blog can be liked', function() {
       // ...
       cy.get('#toggle').click()
       cy.get('#title_input').type('Blogin otsikko')
@@ -71,6 +71,21 @@ describe('Blog app', function() {
         .find('button').click()
       cy.get('#blogs_element').contains('Likes:').find('button').click()
       cy.get('#blogs_element').contains('Likes: 1')
+    })
+
+    it.only('A blog can be removed', function() {
+      // ...
+      cy.get('#toggle').click()
+      cy.get('#title_input').type('Blogin otsikko')
+      cy.get('#author_input').type('Blogin rustaaja')
+      cy.get('#url_input').type('Blogin osoite')
+      cy.get('#PostBlog').click()
+      cy.visit('http://localhost:3000')
+      cy.get('#blogs_element')
+        .contains('Blogin otsikko by Blogin rustaaja')
+        .find('button').click()
+      cy.get('#blogs_element').get('#removeBlog').click()
+      cy.get('.success').should('have.css', 'color', 'rgb(0, 100, 0)')
     })
   })
 })

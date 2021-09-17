@@ -28,7 +28,7 @@ const Blog = ({ blog, likeABlog, removeABlog, user }) => {
     if (user.name === blog.user.name) {
       return (
         <>
-          <button onClick={removeThisBlog}>Remove</button>
+          <button onClick={removeThisBlog} id='removeBlog'>Remove</button>
         </>
       )
     }
