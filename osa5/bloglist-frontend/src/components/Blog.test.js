@@ -1,52 +1,132 @@
 /* eslint-disable no-undef */
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
-/*
-Tee testi, joka varmistaa että blogin näyttävä komponentti renderöi blogin titlen,
-authorin mutta ei renderöi oletusarvoisesti urlia eikä likejen määrää.
-*/
 
-test('renders content', () => {
-  const blog = {
-    title: 'Jokin lisätty blogi',
-    author: 'Muu',
-    url: 'devtools',
-    likes: 5,
-    user: {
+
+describe('<Blog >', () => {
+
+  /*
+  Tee testi, joka varmistaa että blogin näyttävä komponentti renderöi blogin titlen,
+  authorin mutta ei renderöi oletusarvoisesti urlia eikä likejen määrää.
+  */
+
+  test('renders content', () => {
+    const blog = {
+      title: 'Jokin lisätty blogi',
+      author: 'Muu',
+      url: 'devtools',
+      likes: 5,
+      user: {
+        name: 'Lisääjä'
+      }
+    }
+
+    const user = {
       name: 'Lisääjä'
     }
-  }
 
-  const user = {
-    name: 'Lisääjä'
-  }
+    const mockLikeHandler = jest.fn()
+    const mockRemiveHandler = jest.fn()
 
-  const mockLikeHandler = jest.fn()
-  const mockRemiveHandler = jest.fn()
+    const component = render(
+      <Blog blog={blog} likeABlog={mockLikeHandler} removeABlog={mockRemiveHandler} user={user} />
+    )
 
-  const component = render(
-    <Blog blog={blog} likeABlog={mockLikeHandler} removeABlog={mockRemiveHandler} user={user} />
-  )
+    const div = component.container.querySelector('.defaultContent')
+    const otherDiv = component.container.querySelector('.togglableContent')
 
-  expect(component.container.querySelector('.defaultContent')).toHaveTextContent(
-    'Jokin lisätty blogi'
-  )
+    expect(div).not.toHaveStyle('display: none')
+    expect(otherDiv).toHaveStyle('display: none')
 
-  expect(component.container.querySelector('.defaultContent')).toHaveTextContent(
-    'Muu'
-  )
+    expect(div).toHaveTextContent(
+      'Jokin lisätty blogi'
+    )
 
-  expect(component.container.querySelector('.defaultContent')).not.toHaveTextContent(
-    5
-  )
+    expect(div).toHaveTextContent(
+      'Muu'
+    )
 
-  expect(component.container.querySelector('.defaultContent')).not.toHaveTextContent(
-    'devtools'
-  )
+    expect(div).not.toHaveTextContent(
+      5
+    )
 
-  component.debug()
+    expect(div).not.toHaveTextContent(
+      'devtools'
+    )
+  })
 
+  /*
+  Tee testi, joka varmistaa että myös url ja likejen määrä näytetään
+  kun blogin kaikki tiedot näyttävää nappia on painettu.
+  */
+
+  describe('button press tests', () => {
+
+    test('verify style change', () => {
+      const blog = {
+        title: 'Jokin lisätty blogi',
+        author: 'Muu',
+        url: 'devtools',
+        likes: 5,
+        user: {
+          name: 'Lisääjä'
+        }
+      }
+
+      const user = {
+        name: 'Lisääjä'
+      }
+
+      const mockLikeHandler = jest.fn()
+      const mockRemoveHandler = jest.fn()
+
+      const component = render(
+        <Blog blog={blog} likeABlog={mockLikeHandler} removeABlog={mockRemoveHandler} user={user} />
+      )
+
+      const div = component.container.querySelector('.togglableContent')
+
+      expect(div).toHaveStyle('display: none')
+
+      const button = component.getByText('Show')
+      fireEvent.click(button)
+
+      expect(div).not.toHaveStyle('display: none')
+    })
+
+    test('verify content inside', () => {
+      const blog = {
+        title: 'Jokin lisätty blogi',
+        author: 'Muu',
+        url: 'devtools',
+        likes: 5,
+        user: {
+          name: 'Lisääjä'
+        }
+      }
+
+      const user = {
+        name: 'Lisääjä'
+      }
+
+      const mockLikeHandler = jest.fn()
+      const mockRemoveHandler = jest.fn()
+
+      const component = render(
+        <Blog blog={blog} likeABlog={mockLikeHandler} removeABlog={mockRemoveHandler} user={user} />
+      )
+
+      const div = component.container.querySelector('.togglableContent')
+
+      expect(div).toHaveTextContent(
+        'devtools'
+      )
+      expect(div).toHaveTextContent(
+        5
+      )
+    })
+  })
 })
