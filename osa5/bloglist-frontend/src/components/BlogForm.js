@@ -69,7 +69,7 @@ const BlogForm = ({ createBlogPost }) => {
           />
           <label htmlFor="url_input">URL</label>
         </div>
-        <button type="submit">Post the BLOG!</button>
+        <button type="submit" id='PostBlog'>Post the BLOG!</button>
       </form>
     </div>
   )

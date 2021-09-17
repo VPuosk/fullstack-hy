@@ -40,9 +40,23 @@ describe('Blog app', function() {
       cy.get('#password').type('confitential')
       cy.get('#login-button').click()
       cy.get('.error').should('have.css', 'color', 'rgb(100, 0, 0)')
-      //cy.wait(100)
-      //cy.contains('.error')
-      //cy.get('.error').should('have.css', 'color', 'rbg(100, 0, 0)')
+    })
+  })
+  describe('When logged in', function() {
+    beforeEach(function() {
+      // log in user here
+      cy.createAccount()
+      cy.login({ username: 'ttappi', password: 'topsekret' })
+    })
+
+    it('A blog can be created', function() {
+      cy.get('#toggle').click()
+      cy.get('#title_input').type('Blogin otsikko')
+      cy.get('#author_input').type('Blogin rustaaja')
+      cy.get('#url_input').type('Blogin osoite')
+      cy.get('#PostBlog').click()
+      cy.contains('Blogin otsikko by Blogin rustaaja')
+      // ...
     })
   })
 })
