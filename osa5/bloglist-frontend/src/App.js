@@ -57,13 +57,13 @@ const App = () => {
       setErrorMessage( 'Note: Logging in successful' )
       setTimeout(() => {
         setErrorMessage(null)
-      }, 2500)
+      }, 5000)
     } catch (exception) {
       console.log('Bad credentials')
       setErrorMessage( 'Error: Wrong credentials' )
       setTimeout(() => {
         setErrorMessage(null)
-      }, 2500)
+      }, 5000)
     }
   }
 

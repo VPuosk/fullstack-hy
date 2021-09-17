@@ -7,8 +7,6 @@ const Notification = ({ notification }) => {
     )
   }
 
-  console.log(notification.substring(0,5))
-
   if ( notification.substring(0,5) === 'Note:' ) {
     return (
       <div className="success">
