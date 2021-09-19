@@ -5,7 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 
 const AnecdoteList = (props) => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state.anecdotes)
+  const anecdotes = useSelector(state => {
+    if (state.filter === '') {
+      return state.anecdotes
+    }
+    return state
+      .anecdotes
+      .filter(anec => anec.content
+        .toUpperCase()
+        .includes(state.filter
+          .toUpperCase()
+        )
+      )
+  })
 
   const vote = (id) => {
     dispatch(voteAnecdote(id))
