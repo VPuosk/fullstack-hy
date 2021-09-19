@@ -1,11 +1,11 @@
-const initialState = 'Message'
+const initialState = null
 
 const notificationReducer = (state = initialState, action) => {
   switch(action.type) {
     case 'NEW_NOTIFICATION':
-      return [...state, action.data]
+      return action.data
     case 'CLEAR_NOTIFICATION':
-      return []
+      return null
     default:
       return state
   }
