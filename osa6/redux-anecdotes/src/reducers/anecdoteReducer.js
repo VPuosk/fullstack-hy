@@ -26,7 +26,7 @@ const anecdoteReducer = (state = [], action) => {
   }
 }
 
-export const initializeAnecdotes = (content) => {
+export const initializeAnecdotes = () => {
   return async dispatch => {
     const content = await anecdoteService.getAll()
     dispatch({
@@ -37,9 +37,12 @@ export const initializeAnecdotes = (content) => {
 }
 
 export const createAnecdote = (data) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    data,
+  return async dispatch => {
+    const result = await anecdoteService.createNew(data)
+    dispatch({
+      type: 'NEW_ANECDOTE',
+      data: result,
+    })
   }
 }
 
