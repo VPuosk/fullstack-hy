@@ -47,13 +47,18 @@
     },
     {
       "content": "Vanha antibiootti",
-      "votes": 0,
+      "votes": 1,
       "id": "U5L-XJC"
     },
     {
       "content": "vielä testi",
       "votes": 4,
       "id": "b3CQpLh"
+    },
+    {
+      "content": "Uusi dootti",
+      "votes": 1,
+      "id": "MsXG6iG"
     }
   ]
 }
