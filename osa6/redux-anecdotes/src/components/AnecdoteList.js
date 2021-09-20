@@ -20,8 +20,8 @@ const AnecdoteList = (props) => {
   })
 
   const vote = (id) => {
-    dispatch(voteAnecdote(id))
     const anecdote = anecdotes.filter(anec => anec.id === id)[0]
+    dispatch(voteAnecdote(anecdote))
     dispatch(setNotification(`you voted '${anecdote.content}'`))
     setTimeout(() => {
       dispatch(clearNotification())
