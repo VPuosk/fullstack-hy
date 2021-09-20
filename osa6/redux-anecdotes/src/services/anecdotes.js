@@ -8,8 +8,10 @@ const getAll = async () => {
 }
 
 const createNew = async (content) => {
-  const object = { content, important: false }
+  const object = { content, votes: 0 }
+  //console.log('service: object ', object)
   const response = await axios.post(baseUrl, object)
+  //console.log('service: response ', response)
   return response.data
 }
 
