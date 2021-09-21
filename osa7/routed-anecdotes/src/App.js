@@ -49,38 +49,41 @@ const CreateNew = (props) => {
     history.push(`/`)
   }
 
+  const resetFields = (e) => {
+    e.preventDefault()
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
+  const clearResetField = (data) => {
+    const newData = Object.assign({}, data)
+    delete newData.reset
+    return newData
+  }
+
+  const modContent = clearResetField(content)
+  const modAuthor = clearResetField(author)
+  const modInfo = clearResetField(info)
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input 
-            name='content'
-            type={content.type}
-            value={content.value}
-            onChange={content.onChange}
-          />
+          <input {...modContent}/>
         </div>
         <div>
           author
-          <input 
-            name='author'
-            type={author.type}
-            value={author.value}
-            onChange={author.onChange}
-          />
+          <input {...modAuthor}/>
         </div>
         <div>
           url for more info
-          <input 
-            name='info'
-            type={info.type}
-            value={info.value}
-            onChange={info.onChange}
-          />
+          <input {...modInfo}/>
         </div>
         <button>create</button>
+        <button onClick={resetFields}>reset</button>
       </form>
     </div>
   )
