@@ -1,6 +1,29 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-const Notification = ({ notification }) => {
+const Notification = ( props ) => {
+
+  const notificationToShow = () => {
+    console.log('test',props.notification)
+    if (props.notification === null) {
+      return null
+    }
+
+    if (props.notification.type === 'note') {
+      return (
+        <div className="success">
+          {props.notification.content}
+        </div>
+      )
+    } else {
+      return (
+        <div className="error">
+          {props.notification.content}
+        </div>
+      )
+    }
+  }
+  /*
   if (notification === null) {
     return (
       <div className="noNotifications"></div>
@@ -20,6 +43,18 @@ const Notification = ({ notification }) => {
       </div>
     )
   }
+  */
+  return (
+    notificationToShow()
+  )
 }
 
-export default Notification
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
+
+const ConnectedNotification = connect(mapStateToProps)(Notification)
+
+export default ConnectedNotification

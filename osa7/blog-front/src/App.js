@@ -9,14 +9,20 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
 import Blogs from './components/Blogs'
+//
+import { setRedNotification } from './reducers/notificationReducer'
+import { setGreenNotification } from './reducers/notificationReducer'
+
+import { useDispatch } from 'react-redux'
 
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
 
   const blogFormRef = useRef()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -54,16 +60,10 @@ const App = () => {
 
       blogService.setToken(user.token)
       setUser(user)
-      setErrorMessage( 'Note: Logging in successful' )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setGreenNotification( 'Note: Logging in successful', 3 ))
     } catch (exception) {
       console.log('Bad credentials')
-      setErrorMessage( 'Error: Wrong credentials' )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      dispatch(setRedNotification( 'Error: Wrong credentials', 3 ))
     }
   }
 
@@ -73,10 +73,7 @@ const App = () => {
     const response = await blogService.createNew(blogObj)
 
     setBlogs(blogs.concat(response))
-    setErrorMessage( `Note: Added a new blog:\n${response.title} by ${response.author}` )
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 2500)
+    dispatch(setGreenNotification( `Note: Added a new blog:\n${response.title} by ${response.author}`, 3 ))
   }
 
   const handleAddBlogLike = async (id) => {
@@ -87,20 +84,14 @@ const App = () => {
     const response = await blogService.updateExisting(id, newBlog)
     response.user = writer
     setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
-    setErrorMessage( `Note: Liked a blog:\n${response.title} by ${response.author}` )
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 2500)
+    dispatch(setGreenNotification( `Note: Liked a blog:\n${response.title} by ${response.author}`, 3 ))
   }
 
   const handleRemoveBlog = async (id) => {
     //const blog = blogs.find(blog => blog.id === id)
     await blogService.removeBlog(id)
     setBlogs(blogs.filter(blog => blog.id !== id))
-    setErrorMessage( 'Note: Blog removed' )
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 2500)
+    dispatch(setGreenNotification( 'Note: Blog removed', 3 ))
   }
 
   const loginForm = () => {
@@ -128,7 +119,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification notification={errorMessage} />
+        <Notification />
         <h2>Login</h2>
         {loginForm()}
       </div>
@@ -137,7 +128,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification notification={errorMessage} />
+      <Notification />
       <h4>Logged in user: {user.name}</h4>
       <form onClick={handleLogout}>
         <button type="submit">Logout</button>
