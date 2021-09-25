@@ -18,19 +18,11 @@ import { useDispatch } from 'react-redux'
 
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
-
   useEffect(() => {
     dispatch(initBlogs())
   }, [])
@@ -72,35 +64,6 @@ const App = () => {
     }
   }
 
-  const handleBlogCreate = async (blogObj) => {
-    blogFormRef.current.toggleShownStatus()
-
-    const response = await blogService.createNew(blogObj)
-
-    setBlogs(blogs.concat(response))
-    dispatch(setGreenNotification( `Note: Added a new blog:\n${response.title} by ${response.author}`, 3 ))
-  }
-
-  /*
-  const handleAddBlogLike = async (id) => {
-    const blog = blogs.find(blog => blog.id === id)
-    const writer = blog.user
-    const newBlog = { ...blog, likes: blog.likes + 1 }
-
-    const response = await blogService.updateExisting(id, newBlog)
-    response.user = writer
-    setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
-    dispatch(setGreenNotification( `Note: Liked a blog:\n${response.title} by ${response.author}`, 3 ))
-  }
-
-  const handleRemoveBlog = async (id) => {
-    //const blog = blogs.find(blog => blog.id === id)
-    await blogService.removeBlog(id)
-    setBlogs(blogs.filter(blog => blog.id !== id))
-    dispatch(setGreenNotification( 'Note: Blog removed', 3 ))
-  }
-  */
-
   const loginForm = () => {
     return (
       <div>
@@ -115,9 +78,7 @@ const App = () => {
     return (
       <div>
         <Toggleable buttonLabel='Create a new blog' ref={blogFormRef}>
-          <BlogForm
-            createBlogPost={handleBlogCreate}
-          />
+          <BlogForm />
         </Toggleable>
       </div>
     )
