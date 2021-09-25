@@ -12,6 +12,7 @@ import Blogs from './components/Blogs'
 //
 import { setRedNotification } from './reducers/notificationReducer'
 import { setGreenNotification } from './reducers/notificationReducer'
+import { initBlogs } from './reducers/blogReducer'
 
 import { useDispatch } from 'react-redux'
 
@@ -28,6 +29,10 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
+  }, [])
+
+  useEffect(() => {
+    dispatch(initBlogs())
   }, [])
 
   useEffect(() => {
@@ -76,6 +81,7 @@ const App = () => {
     dispatch(setGreenNotification( `Note: Added a new blog:\n${response.title} by ${response.author}`, 3 ))
   }
 
+  /*
   const handleAddBlogLike = async (id) => {
     const blog = blogs.find(blog => blog.id === id)
     const writer = blog.user
@@ -93,6 +99,7 @@ const App = () => {
     setBlogs(blogs.filter(blog => blog.id !== id))
     dispatch(setGreenNotification( 'Note: Blog removed', 3 ))
   }
+  */
 
   const loginForm = () => {
     return (
@@ -135,9 +142,6 @@ const App = () => {
       </form>
       <h2>Blogs</h2>
       <Blogs
-        blogs={blogs}
-        likeABlog={handleAddBlogLike}
-        removeABlog={handleRemoveBlog}
         user={user}
       />
       <h3>Post a new blog</h3>

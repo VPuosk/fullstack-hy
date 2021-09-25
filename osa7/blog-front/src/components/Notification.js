@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 const Notification = ( props ) => {
 
   const notificationToShow = () => {
-    console.log('test',props.notification)
     if (props.notification === null) {
       return null
     }
