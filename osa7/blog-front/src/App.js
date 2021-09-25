@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Switch, Route, Link } from 'react-router-dom'
 import Users from './components/Users'
+import User from './components/User'
 import { getUsers } from './reducers/usersReducer'
 
 const App = () => {
@@ -69,6 +70,8 @@ const App = () => {
     )
   }
 
+  //const userMatch = useRouteMatch('/user/:id')
+
   return (
     <div>
       <Notification />
@@ -78,6 +81,9 @@ const App = () => {
       </div>
       <LoggedOn />
       <Switch>
+        <Route path="/users/:id">
+          <User />
+        </Route>
         <Route path="/users">
           <Users />
         </Route>
