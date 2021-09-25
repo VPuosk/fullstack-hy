@@ -1,11 +1,10 @@
 import React from 'react'
 import Blog from './Blog'
-import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
-const Blogs = ( props ) => {
-  const user = props.user
+const Blogs = ( ) => {
+  const user = useSelector(state => state.login)
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
 
@@ -36,14 +35,5 @@ const Blogs = ( props ) => {
     </div>
   )
 }
-
-
-Blogs.propTypes = {
-//  blogs: PropTypes.array.isRequired,
-//  likeABlog: PropTypes.func.isRequired,
-//  removeABlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
-}
-
 
 export default Blogs

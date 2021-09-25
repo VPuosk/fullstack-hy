@@ -1,10 +1,10 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { userLogOut } from '../reducers/userReducer'
+import { userLogOut } from '../reducers/loginReducer'
 
 const LoggedOn = ( ) => {
   const dispatch = useDispatch()
-  const currentUser = useSelector(state => state.user)
+  const currentUser = useSelector(state => state.login)
 
   const handleLogout = async (event) => {
     event.preventDefault()

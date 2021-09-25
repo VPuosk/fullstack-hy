@@ -11,19 +11,28 @@ import Toggleable from './components/Toggleable'
 import Blogs from './components/Blogs'
 import LoggedOn from './components/LoggedOn'
 //
-import { userSet } from './reducers/userReducer'
+import { userSet } from './reducers/loginReducer'
 import { initBlogs } from './reducers/blogReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { Switch, Route, Link } from 'react-router-dom'
+import Users from './components/Users'
+import { getUsers } from './reducers/usersReducer'
+
 const App = () => {
-  const currentUser = useSelector(state => state.user)
+  const currentUser = useSelector(state => state.login)
 
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(initBlogs())
+  }, [])
+
+  useEffect(() => {
+    dispatch(getUsers())
   }, [])
 
   useEffect(() => {
@@ -46,6 +55,10 @@ const App = () => {
     )
   }
 
+  const padding = {
+    padding: 5
+  }
+
   if (currentUser === null) {
     return (
       <div>
@@ -59,13 +72,22 @@ const App = () => {
   return (
     <div>
       <Notification />
+      <div>
+        <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
+      </div>
       <LoggedOn />
-      <h2>Blogs</h2>
-      <Blogs
-        user={currentUser}
-      />
-      <h3>Post a new blog</h3>
-      {blogForm()}
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          <h2>Blogs</h2>
+          <Blogs />
+          <h3>Post a new blog</h3>
+          {blogForm()}
+        </Route>
+      </Switch>
     </div>
   )
 }

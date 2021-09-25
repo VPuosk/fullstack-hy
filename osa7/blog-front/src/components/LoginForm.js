@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setGreenNotification } from '../reducers/notificationReducer'
 import { setRedNotification } from '../reducers/notificationReducer'
-import { userLogIn } from '../reducers/userReducer'
+import { userLogIn } from '../reducers/loginReducer'
 
 const LoginForm = ( ) => {
 
