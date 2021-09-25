@@ -12,12 +12,9 @@ const LoggedOn = ( ) => {
   }
 
   return (
-    <div>
-      <h4>Logged in user: {currentUser.name}</h4>
-      <form onClick={handleLogout}>
-        <button type="submit">Logout</button>
-      </form>
-    </div>
+    <>Logged in user: {currentUser.name}
+      <button onClick={handleLogout}>Logout</button>
+    </>
   )
 }
 

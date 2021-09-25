@@ -1,72 +1,62 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { useRouteMatch } from 'react-router'
 
-const Blog = ({ blog, likeABlog, removeABlog, user }) => {
+const Blog = ( ) => {
+  const dispatch = useDispatch()
+  const match = useRouteMatch('/blogs/:id')
+  const blog = useSelector(state => state.blogs.find(blog => blog.id === match.params.id))
+  const user = useSelector(state => state.login)
 
-  const [thisBlogVisibility, setThisBlogVisibility] = useState(false)
-
-  const hideWhenVisible  = { display: thisBlogVisibility ? 'none' : '' }
-  const showWhenVisible = { display: thisBlogVisibility ? '' : 'none' }
-
-  const toggleShownStatus = () => {
-    setThisBlogVisibility(!thisBlogVisibility)
+  if (!blog) {
+    return null
   }
 
-  const likeThisBlog = (event) => {
+  const like = (event) => {
     event.preventDefault()
-    likeABlog(blog.id)
+    dispatch(likeBlog(blog))
   }
 
-  const removeThisBlog = (event) => {
+  const remove = (event) => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      removeABlog(blog.id)
+      dispatch(removeBlog(blog.id))
     }
   }
 
   const maybeRenderRemove = () => {
+    if (user === null) {
+      return ( null )
+    }
     if (user.name === blog.user.name) {
       return (
         <>
-          <button onClick={removeThisBlog} id='removeBlog'>Remove</button>
+          <button onClick={remove}>Remove</button>
         </>
       )
     }
     return (
-      <>
-      </>
+      null
     )
   }
 
-  const blogStyle = {
+  /*const blogStyle = {
     width: 400,
     border: 'solid',
     borderWidth: 1,
   }
+  */
 
   return (
-    <div style={blogStyle} className='fullBlog'>
-      <div style={hideWhenVisible} className="defaultContent">
-        {blog.title} by {blog.author}
-        <button onClick={toggleShownStatus}>Show</button>
-      </div>
-      <div style={showWhenVisible} className="togglableContent">
-        <div>Title: {blog.title}<button onClick={toggleShownStatus}>Hide</button></div>
-        <div>Author: {blog.author}</div>
-        <div>Url: {blog.url}</div>
-        <div>Likes: {blog.likes} <button onClick={likeThisBlog}>Like this blog</button></div>
-        <div>Added by: {blog.user.name}</div>
-        {maybeRenderRemove()}
-      </div>
+    <div>
+      <h3>{blog.title} by {blog.author}</h3>
+      <div>Url: {blog.url}</div>
+      <div>Likes: {blog.likes} <button onClick={like}>Like this blog</button></div>
+      <div>Added by: {blog.user.name}</div>
+      {maybeRenderRemove()}
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  likeABlog: PropTypes.func.isRequired,
-  removeABlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
 }
 
 export default Blog

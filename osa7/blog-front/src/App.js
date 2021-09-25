@@ -9,6 +9,7 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import LoggedOn from './components/LoggedOn'
 //
 import { userSet } from './reducers/loginReducer'
@@ -78,9 +79,12 @@ const App = () => {
       <div>
         <Link style={padding} to="/">blogs</Link>
         <Link style={padding} to="/users">users</Link>
+        <LoggedOn />
       </div>
-      <LoggedOn />
       <Switch>
+        <Route path="/blogs/:id">
+          <Blog />
+        </Route>
         <Route path="/users/:id">
           <User />
         </Route>
