@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
-import blogService from './services/blogs'
-import loginService from './services/login'
+//import blogService from './services/blogs'
+//import loginService from './services/login'
 import './index.css'
 //components...
 import Notification from './components/Notification'
@@ -9,16 +9,15 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Toggleable from './components/Toggleable'
 import Blogs from './components/Blogs'
+import LoggedOn from './components/LoggedOn'
 //
-import { setRedNotification } from './reducers/notificationReducer'
-import { setGreenNotification } from './reducers/notificationReducer'
+import { userSet } from './reducers/userReducer'
 import { initBlogs } from './reducers/blogReducer'
 
-import { useDispatch } from 'react-redux'
-
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const currentUser = useSelector(state => state.user)
 
   const blogFormRef = useRef()
 
@@ -33,46 +32,9 @@ const App = () => {
       .getItem('loggedBlogger')
     if (loggedBloggerJSON) {
       const user = JSON.parse(loggedBloggerJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch(userSet(user))
     }
   }, [])
-
-  const handleLogout = async (event) => {
-    event.preventDefault()
-
-    window.localStorage.removeItem('loggedBlogger')
-    blogService.setToken(null)
-    setUser(null)
-  }
-
-  const handleLogin = async (userObj) => {
-
-    try {
-      const user = await loginService.login(userObj)
-
-      window.localStorage.setItem(
-        'loggedBlogger', JSON.stringify(user)
-      )
-
-      blogService.setToken(user.token)
-      setUser(user)
-      dispatch(setGreenNotification( 'Note: Logging in successful', 3 ))
-    } catch (exception) {
-      console.log('Bad credentials')
-      dispatch(setRedNotification( 'Error: Wrong credentials', 3 ))
-    }
-  }
-
-  const loginForm = () => {
-    return (
-      <div>
-        <LoginForm
-          handleLogin={handleLogin}
-        />
-      </div>
-    )
-  }
 
   const blogForm = () => {
     return (
@@ -84,12 +46,12 @@ const App = () => {
     )
   }
 
-  if (user === null) {
+  if (currentUser === null) {
     return (
       <div>
         <Notification />
         <h2>Login</h2>
-        {loginForm()}
+        <LoginForm />
       </div>
     )
   }
@@ -97,13 +59,10 @@ const App = () => {
   return (
     <div>
       <Notification />
-      <h4>Logged in user: {user.name}</h4>
-      <form onClick={handleLogout}>
-        <button type="submit">Logout</button>
-      </form>
+      <LoggedOn />
       <h2>Blogs</h2>
       <Blogs
-        user={user}
+        user={currentUser}
       />
       <h3>Post a new blog</h3>
       {blogForm()}
