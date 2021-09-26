@@ -1,5 +1,6 @@
 import blogService from '../services/blogs'
 import loginService from '../services/login'
+import { setRedNotification, setGreenNotification } from './notificationReducer'
 
 const userReducer = ( state = null, action ) => {
   switch(action.type) {
@@ -27,15 +28,20 @@ export const userSet = (user) => {
 
 export const userLogIn = (user) => {
   return async dispatch => {
-    const loggedUser = await loginService.login(user)
-    window.localStorage.setItem(
-      'loggedBlogger', JSON.stringify(loggedUser)
-    )
-    blogService.setToken(loggedUser.token)
-    dispatch({
-      type: 'LOG_IN',
-      data: loggedUser
-    })
+    try {
+      const loggedUser = await loginService.login(user)
+      window.localStorage.setItem(
+        'loggedBlogger', JSON.stringify(loggedUser)
+      )
+      blogService.setToken(loggedUser.token)
+      dispatch({
+        type: 'LOG_IN',
+        data: loggedUser
+      })
+      dispatch(setGreenNotification( 'Note: Logging in successful', 3 ))
+    } catch (exception) {
+      dispatch(setRedNotification( 'Error: Wrong credentials', 3 ))
+    }
   }
 }
 

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { setGreenNotification } from '../reducers/notificationReducer'
-import { setRedNotification } from '../reducers/notificationReducer'
 import { userLogIn } from '../reducers/loginReducer'
 
 const LoginForm = ( ) => {
@@ -21,10 +19,8 @@ const LoginForm = ( ) => {
   const handleLogin = async (userObj) => {
     try {
       dispatch(userLogIn(userObj))
-      dispatch(setGreenNotification( 'Note: Logging in successful', 3 ))
     } catch (exception) {
       console.log('Bad credentials')
-      dispatch(setRedNotification( 'Error: Wrong credentials', 3 ))
     }
   }
 

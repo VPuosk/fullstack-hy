@@ -17,10 +17,11 @@ import { initBlogs } from './reducers/blogReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import Users from './components/Users'
 import User from './components/User'
 import { getUsers } from './reducers/usersReducer'
+import { NavigationBar, MainView, StyledLink } from './components/Styles'
 
 const App = () => {
   const currentUser = useSelector(state => state.login)
@@ -74,13 +75,13 @@ const App = () => {
   //const userMatch = useRouteMatch('/user/:id')
 
   return (
-    <div>
+    <MainView>
       <Notification />
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
+      <NavigationBar>
+        <StyledLink style={padding} to="/">blogs</StyledLink>
+        <StyledLink style={padding} to="/users">users</StyledLink>
         <LoggedOn />
-      </div>
+      </NavigationBar>
       <Switch>
         <Route path="/blogs/:id">
           <Blog />
@@ -98,7 +99,7 @@ const App = () => {
           {blogForm()}
         </Route>
       </Switch>
-    </div>
+    </MainView>
   )
 }
 
