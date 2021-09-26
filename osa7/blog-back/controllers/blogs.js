@@ -23,7 +23,8 @@ blogRouter.post('/', userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     user: user._id,
-    likes: body.likes === undefined ? 0 : body.likes
+    likes: body.likes === undefined ? 0 : body.likes,
+    comments: []
   })
 
   if ((blog.title) && (blog.url)) {
@@ -67,6 +68,7 @@ blogRouter.put('/:id', userExtractor, async (request, response) => {
   }
   */
 
+  /*
   const blog = {
     title: request.body.title,
     author: request.body.author,
@@ -74,6 +76,8 @@ blogRouter.put('/:id', userExtractor, async (request, response) => {
     url: request.body.url,
     likes: request.body.likes === undefined ? 0 : request.body.likes
   }
+  */
+  const blog = request.body
 
   if ((blog.title) && (blog.url)) {
     const result = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
@@ -81,6 +85,19 @@ blogRouter.put('/:id', userExtractor, async (request, response) => {
   } else {
     response.status(400).end()
   }
+})
+
+blogRouter.post('/:id/comments', userExtractor, async (request, response) => {
+  //const blog = await Blog.findById(request.params.id)
+  //const comments = blog.comments
+  const comment = request.body.comment
+  const blog = request.body.blog
+
+  const newComments = [...blog.comments, comment]
+  const newBlog = { ...blog, comments: newComments }
+
+  const result = await Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true })
+  response.status(200).json(result.toJSON())
 })
 
 module.exports = blogRouter

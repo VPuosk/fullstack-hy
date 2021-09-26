@@ -1,9 +1,8 @@
 import blogService from '../services/blogs'
-import { setGreenNotification } from './notificationReducer'
 
 const blogReducer = (state = [], action) => {
   switch(action.type) {
-  case 'LIKE':
+  case 'UPDATE_BLOG':
     return state.map(blog => blog.id !== action.data.id ? blog : action.data)
   case 'ADD_BLOG':
     return [...state, action.data]
@@ -42,7 +41,7 @@ export const createBlog = (blog) => {
 export const removeBlog = (id) => {
   return async dispatch => {
     await blogService.removeBlog(id)
-    dispatch(setGreenNotification( 'Note: Blog removed', 3 ))
+    //dispatch(setGreenNotification( 'Note: Blog removed', 3 ))
     dispatch({
       type: 'REMOVE_BLOG',
       data: id
@@ -50,15 +49,25 @@ export const removeBlog = (id) => {
   }
 }
 
+export const postCommentToBlog = (id, content) => {
+  return async dispatch => {
+    const result = await blogService.postComment(id, content)
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: result
+    })
+  }
+}
+
 export const likeBlog = (blog) => {
-  const newBlog = { ...blog, likes: blog.likes + 1 }
-  const writer = newBlog.user
+  const newBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
+  //const writer = newBlog.user
   return async dispatch => {
     const result = await blogService.updateExisting(blog.id, newBlog)
-    result.user = writer
-    dispatch(setGreenNotification( `Note: Liked a blog:\n${result.title} by ${result.author}`, 3 ))
+    //result.user = writer
+    //dispatch(setGreenNotification( `Note: Liked a blog:\n${result.title} by ${result.author}`, 3 ))
     dispatch({
-      type: 'LIKE',
+      type: 'UPDATE_BLOG',
       data: result
     })
   }

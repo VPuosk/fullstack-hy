@@ -1,0 +1,7 @@
+POST http://localhost:3003/api/blogs/61418bf8d923b98d505a64f2/comments
+content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RpIDUiLCJpZCI6IjYxNDAyZmYyYjgwYWQzNTc5NDQ3YTc2YiIsImlhdCI6MTYzMTYwODg3N30.3R7eeaScYon3aZ5NKu6Nx4WWiEhQ45NX6G0quVq9ugo
+
+{
+    "body": "TESTIPOSTI nro 7"
+}
