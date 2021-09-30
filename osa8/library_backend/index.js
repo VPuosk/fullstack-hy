@@ -164,7 +164,6 @@ const resolvers = {
       const oldAuthor = authors.find(author => author.name === args.name)
       
       if (!oldAuthor) {
-        console.log('AA')
         return null
       }
 
