@@ -6,6 +6,19 @@ import NewBook from './components/NewBook'
 const App = () => {
   const [page, setPage] = useState('authors')
 
+  const showContent = () => {
+    switch (page) {
+      case 'authors':
+        return ( <Authors /> )
+      case 'books':
+        return ( <Books /> )
+      case 'add':
+        return ( <NewBook /> )
+      default:
+        return null;
+    }
+  }
+
   return (
     <div>
       <div>
@@ -14,17 +27,7 @@ const App = () => {
         <button onClick={() => setPage('add')}>add book</button>
       </div>
 
-      <Authors
-        show={page === 'authors'}
-      />
-
-      <Books
-        show={page === 'books'}
-      />
-
-      <NewBook
-        show={page === 'add'}
-      />
+      {showContent()}
 
     </div>
   )
