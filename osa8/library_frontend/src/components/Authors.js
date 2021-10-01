@@ -1,15 +1,10 @@
 import { useQuery } from '@apollo/client'
 import React from 'react'
 import { ALL_AUTHORS } from '../queries'
+import AuthorEdit from './AuthorEdit'
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
-  
-  /*
-  if (!props.show) {
-    return null
-  }
-  */
 
   if (result.loading) {
     return (
@@ -45,6 +40,7 @@ const Authors = (props) => {
         </tbody>
       </table>
 
+      <AuthorEdit />
     </div>
   )
 }

@@ -18,13 +18,11 @@ const NewBook = (props) => {
     
     console.log('add book...')
 
-    const publishingYear = Number(published)
-
-    createBook({
+    await createBook({
       variables: {
         title,
         author,
-        publishingYear,
+        publishingYear: Number(published),
         genres
       }
     })
