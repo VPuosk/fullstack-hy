@@ -40,7 +40,7 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <AuthorEdit />
+      <AuthorEdit authors={authors}/>
     </div>
   )
 }
