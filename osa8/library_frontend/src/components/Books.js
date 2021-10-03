@@ -20,7 +20,9 @@ const Books = (props) => {
   }, [result.data]) // eslint-disable-line
 
   useEffect(() => {
-    getGenreBooks({ variables: { genreName: selected.value } })
+    if (selected !== '') {
+      getGenreBooks({ variables: { genreName: selected.value } })
+    }
   }, [selected]) // eslint-disable-line
 
   useEffect(() => {
