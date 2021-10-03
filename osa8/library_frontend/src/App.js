@@ -59,7 +59,9 @@ const App = () => {
       case 'books':
         return ( <Books /> )
       case 'add':
-        return ( <NewBook /> )
+        return ( <NewBook
+          setPage={setPage}
+        /> )
       case 'login':
         return ( <Login
           setToken={setToken}
