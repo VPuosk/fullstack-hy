@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const { v1: uuid } = require('uuid')
 require('dotenv').config()
 const mongoose = require('mongoose')
@@ -169,7 +169,7 @@ const resolvers = {
           .find({genres: { $in: args.genre }})
           .populate('author')
       }
-      return books
+      return Book.find({}).populate('author')
     },
     allAuthors: async () => await Author.find({})
   },
@@ -195,7 +195,13 @@ const resolvers = {
           name: args.author,
           id: uuid()
         })
-        await newAuthor.save()
+        try {
+          await newAuthor.save()
+        } catch (error) {
+          throw new UserInputError(error.message,{
+            invalidArgs: args,
+          })
+        }
         // to get the actual object with id and all...
         author = await Author.findOne({ name: args.author})
       }
@@ -203,12 +209,19 @@ const resolvers = {
       const book = new Book({ ...args, author: author, id: uuid() })
       //books = books.concat(book)
       //console.log(book)
-      return book.save()
+      try {
+        return book.save()
+      } catch (error) {
+        throw new UserInputError(error.message,{
+          invalidArgs: args,
+        })
+      }
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name})
       
       if (!author) {
+        throw new UserInputError(`Author: ${args.name} could not be found`)
         return null
       }
 
