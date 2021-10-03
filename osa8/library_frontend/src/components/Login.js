@@ -15,7 +15,7 @@ const Login = ({ setToken, setPage }) => {
       localStorage.setItem('library-app-user-token', token)
       setPage('books')
     }
-  })
+  }, [result.data]) // eslint-disable-line
 
   const loginUser = async (event) => {
     event.preventDefault()
