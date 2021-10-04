@@ -1,19 +1,23 @@
-import { useApolloClient, useLazyQuery } from '@apollo/client'
+import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import Login from './components/Login'
 import NewBook from './components/NewBook'
 import Recommended from './components/Recommended'
-import { GET_CURRENT_USER } from './queries'
+import { ALL_GENRE_BOOKS, BOOK_ADDED, GET_CURRENT_USER } from './queries'
 
+import { useSubscription } from '@apollo/client'
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
+  const [selectedGenre, setSelectedGenre] = useState({value: '', label: 'all'})
+  const result = useQuery(ALL_GENRE_BOOKS, {variables: { genreName: selectedGenre.value}})
   const [getUser, userResult] = useLazyQuery(GET_CURRENT_USER)
   const client = useApolloClient()
+  
 
   useEffect(() => {
     if (token) {
@@ -28,6 +32,43 @@ const App = () => {
       setUser(userResult.data.me)
     }
   }, [userResult.data])
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => {
+      return set.map(item => item.title).includes(object.title)
+    }
+    
+    let booksInStore = client.readQuery({ query: ALL_GENRE_BOOKS })
+
+    if (!booksInStore) {
+      console.log('client book data not ready before subscription')
+      booksInStore = result.data
+    }
+
+    console.log(booksInStore)
+
+    if (!includedIn(booksInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_GENRE_BOOKS,
+        variables: { genreName: '' },
+        data: { allBooks : booksInStore.allBooks.concat(addedBook) }
+      })
+    }
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const newBook = subscriptionData.data.bookAdded
+      updateCacheWith(newBook)
+      window.alert(`New book added`)
+    }
+  })
+
+  const changeGenre = (value) => {
+    console.log(value)
+    setSelectedGenre(value)
+    
+  }
 
   const logout = () => {
     setToken(null)
@@ -57,7 +98,19 @@ const App = () => {
       case 'authors':
         return ( <Authors /> )
       case 'books':
-        return ( <Books /> )
+        if (result.loading) {
+          return (
+            <div>
+              Page loading.. be patient
+            </div>
+          )
+        }
+        //console.log(result)
+        return ( <Books
+          books={result.data.allBooks}
+          genre={selectedGenre}
+          setGenre={() => changeGenre}
+        /> )
       case 'add':
         return ( <NewBook
           setPage={setPage}

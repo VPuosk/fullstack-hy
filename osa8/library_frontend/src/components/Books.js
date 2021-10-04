@@ -1,35 +1,13 @@
 
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import React, { useState, useEffect } from 'react'
-import { ALL_BOOKS, ALL_GENRES, ALL_GENRE_BOOKS } from '../queries'
+import { ALL_GENRES } from '../queries'
 import Select from 'react-select'
 
-const Books = (props) => {
-  const [books, setBooks] = useState([])
+const Books = ({ books, genre, setGenre }) => {
+  //const [books, setBooks] = useState([])
   const [genres, setGenres] = useState([])
-  const [selected, setSelected] = useState('')
-
-  const result = useQuery(ALL_BOOKS)
   const [getGenres, genreResult] = useLazyQuery(ALL_GENRES)
-  const [getGenreBooks, genreBookResult] = useLazyQuery(ALL_GENRE_BOOKS)
-
-  useEffect(() => {
-    if (result.data) {
-      setBooks(result.data.allBooks)
-    }
-  }, [result.data]) // eslint-disable-line
-
-  useEffect(() => {
-    if (selected !== '') {
-      getGenreBooks({ variables: { genreName: selected.value } })
-    }
-  }, [selected]) // eslint-disable-line
-
-  useEffect(() => {
-    if (genreBookResult.data) {
-      setBooks(genreBookResult.data.allBooks)
-    }
-  }, [genreBookResult.data]) // eslint-disable-line
 
   useEffect(() => {
     getGenres()    
@@ -48,7 +26,7 @@ const Books = (props) => {
     }
   }, [genreResult.data])
 
-  if (result.loading) {
+  if (!books) {
     return <div>
       ...fetching library data...
     </div>
@@ -62,8 +40,8 @@ const Books = (props) => {
     }
     return (
       <Select
-        defaultValue={selected}
-        onChange={setSelected}
+        defaultValue={genre}
+        onChange={setGenre()}
         options={genres}
       />
     )
