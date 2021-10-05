@@ -6,7 +6,7 @@ interface exerciseData {
   ratingDescription: string,
   target: number,
   average: number;
-};
+}
 
 interface exerciseDataInput {
   target: number,
@@ -48,7 +48,7 @@ const calculateExercises = ( inputArray: number[], inputTarget: number):exercise
   }
 
   return data;
-}
+};
 
 const parseValues = (args:string[]):exerciseDataInput => {
   if (args.length < 4) {
@@ -60,18 +60,22 @@ const parseValues = (args:string[]):exerciseDataInput => {
     days: [...args].splice(3).map(a => Number(a)).map(a => a || 0)
   };
 
-  inputData.target = inputData.target || 0
+  inputData.target = inputData.target || 0;
 
   //console.log('iData:',inputData)
 
   return inputData;
-}
+};
 
 try {
   const feedValues:exerciseDataInput = parseValues(process.argv);
-  console.log(calculateExercises(feedValues.days,feedValues.target))
+  console.log(calculateExercises(feedValues.days,feedValues.target));
 } catch (error) {
-  console.log(error.message);
+  if (error instanceof Error) {
+    console.log(error.message);
+  } else {
+    console.log('error');
+  }
 }
 
 //console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));

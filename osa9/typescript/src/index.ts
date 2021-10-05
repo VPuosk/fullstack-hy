@@ -1,5 +1,5 @@
 import express from 'express';
-import { calculateBmi } from './bmiCalculator';
+import { calculateBmi } from './bmiCalc';
 //const express = require('express');
 const app = express();
 
@@ -15,15 +15,15 @@ app.get('/bmi', (req, res) => {
     return;
   }
 
-  const valueA:number = Number(req.query.height);
-  const valueB:number = Number(req.query.weight);
+  const valueA = Number(req.query.height);
+  const valueB = Number(req.query.weight);
 
   if (!valueA || !valueB) {
     res.status(400).send({
       error: "malformatted parameters"
     });
     return;
-  };
+  }
   
   const result:string = calculateBmi(valueA, valueB);
 
