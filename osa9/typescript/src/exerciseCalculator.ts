@@ -8,6 +8,11 @@ interface exerciseData {
   average: number;
 };
 
+interface exerciseDataInput {
+  target: number,
+  days: number[]
+}
+
 const calculateExercises = ( inputArray: number[], inputTarget: number):exerciseData => {
   //const inputArray = [1];
   //const inputTarget = 1;
@@ -45,4 +50,28 @@ const calculateExercises = ( inputArray: number[], inputTarget: number):exercise
   return data;
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const parseValues = (args:string[]):exerciseDataInput => {
+  if (args.length < 4) {
+    throw new Error("Too few arguments");
+  }
+
+  const inputData :exerciseDataInput = {
+    target: Number(args[2]),
+    days: [...args].splice(3).map(a => Number(a)).map(a => a || 0)
+  };
+
+  inputData.target = inputData.target || 0
+
+  //console.log('iData:',inputData)
+
+  return inputData;
+}
+
+try {
+  const feedValues:exerciseDataInput = parseValues(process.argv);
+  console.log(calculateExercises(feedValues.days,feedValues.target))
+} catch (error) {
+  console.log(error.message);
+}
+
+//console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
