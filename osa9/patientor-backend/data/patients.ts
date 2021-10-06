@@ -1,6 +1,7 @@
-import { PatientObject } from "../src/types";
+import { PatientIDOmitted, PatientObject } from "../src/types";
+import verifyNewEntry from "../src/utils";
 
-const patientArray : PatientObject[] = [
+const data = [
   {
       "id": "d2773336-f723-11e9-8f0b-362b9e155667",
       "name": "John McClane",
@@ -42,5 +43,11 @@ const patientArray : PatientObject[] = [
       "occupation": "Digital evangelist"
   }
 ];
+
+const patientArray : PatientObject[] = data.map(obj => {
+   const object : PatientIDOmitted = verifyNewEntry(obj);
+   const patient = {...object, id: obj.id};
+   return patient;
+});
 
 export default patientArray;
