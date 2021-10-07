@@ -45,6 +45,7 @@ const verifyNewEntry = ({name, ssn, dateOfBirth, occupation, gender} : InputFiel
     dateOfBirth: parseDate(dateOfBirth),
     occupation: parseString('occupation', occupation),
     gender: parseGender(gender),
+    entries: [],
   };
 
   return newPatient;

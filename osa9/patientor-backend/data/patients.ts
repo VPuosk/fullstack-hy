@@ -1,4 +1,4 @@
-import { PatientIDOmitted, PatientObject } from "../src/types";
+import { PatientIDOmitted, Patient } from "../src/types";
 import verifyNewEntry from "../src/utils";
 
 const data = [
@@ -44,7 +44,7 @@ const data = [
   }
 ];
 
-const patientArray : PatientObject[] = data.map(obj => {
+const patientArray : Patient[] = data.map(obj => {
    const object : PatientIDOmitted = verifyNewEntry(obj);
    const patient = {...object, id: obj.id};
    return patient;

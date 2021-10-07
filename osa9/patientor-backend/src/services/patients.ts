@@ -1,12 +1,12 @@
 import patientArray from "../../data/patients";
-import { PatientObject, PatientSSNOmitted, PatientIDOmitted } from "../types";
+import { Patient, PublicPatient, PatientIDOmitted } from "../types";
 import {v1 as uuid} from 'uuid';
 
-const getPatients = () : PatientObject[] => {
+const getPatients = () : Patient[] => {
   return patientArray;
 };
 
-const getPatientsSafe = () : PatientSSNOmitted[] => {
+const getPatientsSafe = () : PublicPatient[] => {
   return patientArray
     .map(patient => ({
       id: patient.id,
@@ -17,15 +17,23 @@ const getPatientsSafe = () : PatientSSNOmitted[] => {
     }));
 };
 
-const addNewPatient = ( newData : PatientIDOmitted ) : PatientObject => {
+const addNewPatient = ( newData : PatientIDOmitted ) : Patient => {
   const newPatient = { ...newData, id: uuid()};
   patientArray.push(newPatient);
   return newPatient;
 };
 
+const getPatientByID = ( id : string ) : Patient | null => {
+  const patient = patientArray.find(patient => patient.id === id);
+  if (!patient) {
+    return null;
+  }
+  return patient;
+};
 
 export default {
   getPatients,
   getPatientsSafe,
-  addNewPatient
+  addNewPatient,
+  getPatientByID
 };
