@@ -1,0 +1,32 @@
+import React from "react";
+import axios from "axios";
+
+import { useStateValue } from "../state";
+import { Patient } from "../types";
+import { apiBaseUrl } from "../constants";
+import { useParams } from 'react-router-dom';
+
+const PatientPage = () => {
+  const [{ patients }, dispatch] = useStateValue();
+  const { id } = useParams<{ id: string }>();
+
+  const currentPatient = patients[id];
+
+  const fetchPatient = async () => {
+    if (currentPatient.ssn === undefined ) {
+      const { data : patient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
+      dispatch({ type: "UPDATE_PATIENT", payload: patient });
+    }
+  };
+  void fetchPatient();
+
+  return (
+    <div>
+      <div>{currentPatient.name}</div>
+      <div>{currentPatient.ssn}</div>
+      <div>{currentPatient.occupation}</div>
+    </div>
+  );
+};
+
+export default PatientPage;

@@ -6,6 +6,7 @@ import { Button, Divider, Header, Container } from "semantic-ui-react";
 import { apiBaseUrl } from "./constants";
 import { useStateValue } from "./state";
 import { Patient } from "./types";
+import PatientPage from "./components/PatientPage";
 
 import PatientListPage from "./PatientListPage";
 
@@ -37,6 +38,9 @@ const App = () => {
           </Button>
           <Divider hidden />
           <Switch>
+            <Route path="/patients/:id">
+              <PatientPage />
+            </Route>
             <Route path="/">
               <PatientListPage />
             </Route>
