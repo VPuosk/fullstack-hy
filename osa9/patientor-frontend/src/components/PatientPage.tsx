@@ -9,7 +9,7 @@ import { updatePatient } from "../state/reducer";
 
 const PatientPage = () => {
   //const [ currentPatient, setCurrentPatient ] = useState<Patient>( );
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   const currentPatient = patients[id];
@@ -51,7 +51,7 @@ const PatientPage = () => {
             {entry.date} {entry.description}
             <div>
               {entry.diagnosisCodes?.map(diagcode => (
-                <div key={diagcode}>{diagcode}</div>
+                <div key={diagcode}>{diagcode} {diagnoses[diagcode].name}</div>
               ))}
             </div>
           </div>
