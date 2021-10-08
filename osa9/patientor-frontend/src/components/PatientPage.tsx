@@ -8,28 +8,45 @@ import { useParams } from 'react-router-dom';
 import { updatePatient } from "../state/reducer";
 import HealthRatingBar from "./HealthRatingBar";
 import { Table } from "semantic-ui-react";
+import { AddHospitalForm } from "../AddEntry/AddEntryForm";
+
+
 
 const PatientPage = () => {
-  //const [ currentPatient, setCurrentPatient ] = useState<Patient>( );
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
-  const currentPatient = patients[id];
+  const patient : Patient = patients[id];
 
-  const fetchPatient = async () => {
+  if (patient && (patient.ssn === undefined)) {
+    const fetchPatient = async (id:string) => {
+      console.log(`fetching data for ${patients[id].name}`);
+      const { data : newpatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
+      dispatch(updatePatient(newpatient));
+    };
 
-    if (currentPatient && currentPatient.ssn === undefined ) {
-      console.log(`fetching data for ${currentPatient.name}`);
-      const { data : patient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-      dispatch(updatePatient(patient));
+    void fetchPatient(id);
+  }
+
+  const submitNewEntry = async (values: Entry) => {
+    if (patient) {
+      try {
+        const { data: newEntry } = await axios.post<Patient>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          values
+        );
+        dispatch(updatePatient(newEntry));
+        //setCurrentPatient(patients[id]);
+      } catch (e) {
+        if (e instanceof Error) {
+          console.log(e.message);
+        }
+        console.error('Unknown Error');
+      }
     }
   };
 
-  if (currentPatient && !(currentPatient.ssn)) {
-    void fetchPatient();
-  }
-
-  if (!currentPatient) {
+  if (!patient) {
     return (
       <div>
         False patient ID
@@ -96,21 +113,15 @@ const PatientPage = () => {
 
   const renderEntries = () => {
     //safety check
-    if (currentPatient.entries === undefined) {
+    if (patient.entries === undefined) {
       return (
         null
       );
     }
-
-    /*
-    <Table celled>
-        <Table.Header>
-          <Table.Row>
-    */
     return (
       <Table celled>
         <Table.Body>
-          {currentPatient.entries.map(entry => (
+          {patient.entries.map(entry => (
             <Table.Row key={entry.id}>
               <Table.Cell>
                 <div>{renderVisitType(entry.type)}</div>
@@ -135,11 +146,14 @@ const PatientPage = () => {
 
   return (
     <div>
-      <h2>{currentPatient.name}</h2>
-      <div>{currentPatient.ssn}</div>
-      <div>{currentPatient.occupation}</div>
+      <h2>{patient.name}</h2>
+      <div>{patient.ssn}</div>
+      <div>{patient.occupation}</div>
       <h3>Entries</h3>
       {renderEntries()}
+      <AddHospitalForm
+        onSubmit={submitNewEntry}
+      />
     </div>
   );
 };
