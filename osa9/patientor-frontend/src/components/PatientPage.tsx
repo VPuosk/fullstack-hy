@@ -2,10 +2,12 @@ import React from "react";
 import axios from "axios";
 
 import { useStateValue } from "../state";
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useParams } from 'react-router-dom';
 import { updatePatient } from "../state/reducer";
+import HealthRatingBar from "./HealthRatingBar";
+import { Table } from "semantic-ui-react";
 
 const PatientPage = () => {
   //const [ currentPatient, setCurrentPatient ] = useState<Patient>( );
@@ -35,29 +37,98 @@ const PatientPage = () => {
     );
   }
 
-  
-  //void fetchPatient();
+  const renderDiagnosecode = ( code : string) => {
+    return (
+      <div key={code}>{code} {diagnoses[code].name}</div>
+    );
+  };
+
+  const renderVisitType = (type : string) => {
+    switch (type) {
+      case "Hospital":
+        return (
+          <div>
+            Hospital visit
+          </div>
+        );
+      case "OccupationalHealthcare":
+        return (
+          <div>
+            Occupational healthcare
+          </div>
+        );
+      case "HealthCheck":
+        return (
+          <div>
+            Health check
+          </div>
+        );
+      default:
+        break;
+    }
+  };
+
+  const renderEntry = ( entry : Entry ) => {
+    switch (entry.type) {
+      case "Hospital":
+        return (
+          <div>
+            Discharged: {entry.discharge.date} - {entry.discharge.criteria}
+          </div>
+        );
+      case "OccupationalHealthcare":
+        return (
+          <div>
+            <div>Employer: {entry.employerName}</div>
+            <div>Sickleave: {entry.sickLeave?.startDate} - {entry.sickLeave?.endDate}</div>
+          </div>
+        );
+      case "HealthCheck":
+        return (
+          <div>
+            <HealthRatingBar showText={false} rating={entry.healthCheckRating} />
+          </div>
+        );
+      default:
+        break;
+    }
+  };
 
   const renderEntries = () => {
+    //safety check
     if (currentPatient.entries === undefined) {
       return (
         null
       );
     }
+
+    /*
+    <Table celled>
+        <Table.Header>
+          <Table.Row>
+    */
     return (
-      <div>
-        {currentPatient.entries.map(entry => (
-          <div key={entry.id}>
-            {entry.date} {entry.description}
-            <div>
-              {entry.diagnosisCodes?.map(diagcode => (
-                <div key={diagcode}>{diagcode} {diagnoses[diagcode].name}</div>
-              ))}
-            </div>
-          </div>
-        )
-        )}
-      </div>
+      <Table celled>
+        <Table.Body>
+          {currentPatient.entries.map(entry => (
+            <Table.Row key={entry.id}>
+              <Table.Cell>
+                <div>{renderVisitType(entry.type)}</div>
+                <div>{entry.date} {entry.description}</div>
+                <div>
+                  {renderEntry(entry)}
+                </div>
+                <div>
+                  {entry.diagnosisCodes?.map(diagcode => 
+                    renderDiagnosecode(diagcode)  
+                  )}
+                </div>
+              </Table.Cell>
+            </Table.Row>
+            )
+          )}
+        </Table.Body>
+      </Table>
     );
   };
 
