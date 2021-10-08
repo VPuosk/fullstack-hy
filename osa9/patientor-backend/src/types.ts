@@ -19,12 +19,12 @@ export interface Patient {
 
 
 ///
-interface HospitalDischarge {
+export interface HospitalDischarge {
   date: string;
   criteria: string;
 }
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string;
   endDate: string;
 }
