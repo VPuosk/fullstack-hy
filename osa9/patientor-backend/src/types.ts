@@ -7,6 +7,8 @@ export interface DiagnoseObject {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type Entry = HealthCheckEntry | HospitalEntry | OccupationalHealthCareEntry;
 
+export type EntryType = "Hospital" | "HealthCheck" | "OccupationalHealthcare";
+
 export interface Patient {
   id: string;
   name: string;

@@ -6,22 +6,21 @@ import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
 import { Entry } from "../types";
 import { useStateValue } from "../state";
 
-/*
- * use type Patient, but omit id and entries,
- * because those are irrelevant for new patient object.
- */
-
 interface Props {
   onSubmit: (values: Entry) => void;
 }
 
-export const AddHospitalForm = ({ onSubmit } : Props ) => {
+export const HospitalForm = ({ onSubmit } : Props ) => {
   const [ {diagnoses }] = useStateValue();
+
+  //const type : EntryType = entryType as EntryType;
+  //console.log('a',entryType);
+
   return (
     <Formik
       initialValues={{
         type: "Hospital",
-        id: "dummy",
+        id: "dummy2",
         description: "",
         date: "",
         specialist: "",

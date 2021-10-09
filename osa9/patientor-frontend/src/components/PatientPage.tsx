@@ -7,21 +7,28 @@ import { apiBaseUrl } from "../constants";
 import { useParams } from 'react-router-dom';
 import { updatePatient } from "../state/reducer";
 import HealthRatingBar from "./HealthRatingBar";
-import { Table, Segment } from "semantic-ui-react";
-import { AddHospitalForm } from "../AddEntry/AddEntryForm";
+import { Table, Segment, Select, DropdownProps } from "semantic-ui-react";
+import { OccupationalHCForm } from "../AddEntry/OccupationalHCForm";
+import { HealthCheckForm } from "../AddEntry/HealthCheckForm";
+import { HospitalForm } from "../AddEntry/HospitalForm";
 
-
+const entryOptions = [
+  {key : 'Hospital', value: 'Hospital', text: 'Hospital Visit'},
+  {key : 'HealthCheck', value: 'HealthCheck', text: 'Health Check'},
+  {key : 'OccupationalHealthcare', value: 'OccupationalHealthcare', text: 'Occupational Healthcare'},
+];
 
 const PatientPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [ error, setError] = React.useState<string|undefined>();
+  const [ currentEntry, setEntryType ] = React.useState<string>('Hospital');
 
   const patient : Patient = patients[id];
 
   if (patient && (patient.ssn === undefined)) {
     const fetchPatient = async (id:string) => {
-      console.log(`fetching data for ${patients[id].name}`);
+      //console.log(`fetching data for ${patients[id].name}`);
       const { data : newpatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
       dispatch(updatePatient(newpatient));
     };
@@ -30,6 +37,7 @@ const PatientPage = () => {
   }
 
   const submitNewEntry = async (values: Entry) => {
+    //console.log('submit',values);
     if (patient) {
       try {
         const { data: newEntry } = await axios.post<Patient>(
@@ -158,6 +166,45 @@ const PatientPage = () => {
     );
   };
 
+  const changeSelected = (_value:unknown, data: DropdownProps) => {
+    const target = data.value as string;
+    setEntryType(target);
+  };
+
+  const renderSelect = ( ) => {
+    return (
+      <Select
+        defaultValue={currentEntry}
+        onChange={changeSelected}
+        options={entryOptions}
+      />
+    );
+  };
+
+  const renderSelected = () => {
+    switch (currentEntry) {
+      case "Hospital":
+        return (
+          <HospitalForm
+            onSubmit={submitNewEntry}
+          />
+        );
+      case "HealthCheck":
+        return (
+          <HealthCheckForm
+            onSubmit={submitNewEntry}
+          />
+        );
+      case "OccupationalHealthcare":
+        return (
+          <OccupationalHCForm
+            onSubmit={submitNewEntry}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div>
@@ -167,9 +214,8 @@ const PatientPage = () => {
       <div>{patient.occupation}</div>
       <h3>Entries</h3>
       {renderEntries()}
-      <AddHospitalForm
-        onSubmit={submitNewEntry}
-      />
+      {renderSelect()}
+      {renderSelected()}
     </div>
   );
 };

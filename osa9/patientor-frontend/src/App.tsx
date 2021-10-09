@@ -32,7 +32,7 @@ const App = () => {
         const { data : diagnoseListFromApi } = await axios.get<Diagnosis[]>(
           `${apiBaseUrl}/diagnosis`
         );
-        console.log(diagnoseListFromApi);
+        //console.log(diagnoseListFromApi);
         dispatch(setDiagnoseList(diagnoseListFromApi));
       } catch (e) {
         console.error(e);

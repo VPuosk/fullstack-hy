@@ -138,6 +138,7 @@ export const verifyNewEntry = ( {
   sickLeave,
   discharge,
 } : EntryInputFields ) : Entry => {
+  console.log(type);
   const entryType = parseString('type', type);
   const baseEntries = {
     id: parseString('id', id),
@@ -146,6 +147,8 @@ export const verifyNewEntry = ( {
     specialist: parseString('specialis', specialist),
     diagnosisCodes: parseDiagnosisCodes(diagnosisCodes)
   };
+
+  console.log(entryType);
 
   switch (entryType) {
     case "Hospital":
