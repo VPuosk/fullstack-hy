@@ -7,7 +7,7 @@ import { apiBaseUrl } from "../constants";
 import { useParams } from 'react-router-dom';
 import { updatePatient } from "../state/reducer";
 import HealthRatingBar from "./HealthRatingBar";
-import { Table } from "semantic-ui-react";
+import { Table, Segment } from "semantic-ui-react";
 import { AddHospitalForm } from "../AddEntry/AddEntryForm";
 
 
@@ -15,6 +15,7 @@ import { AddHospitalForm } from "../AddEntry/AddEntryForm";
 const PatientPage = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+  const [ error, setError] = React.useState<string|undefined>();
 
   const patient : Patient = patients[id];
 
@@ -38,10 +39,14 @@ const PatientPage = () => {
         dispatch(updatePatient(newEntry));
         //setCurrentPatient(patients[id]);
       } catch (e) {
-        if (e instanceof Error) {
-          console.log(e.message);
+        if(e.response) {
+          setError(e.response.data);
+        } else if (e instanceof  Error) {
+          setError(e.message); 
+        } else {
+          setError('Unknown error'); 
         }
-        console.error('Unknown Error');
+        setTimeout(() => setError(undefined), 4000);
       }
     }
   };
@@ -53,6 +58,16 @@ const PatientPage = () => {
       </div>
     );
   }
+
+  const maybeRenderError = () => {
+    if (error) {
+      return (
+        <Segment inverted color="red">{`Something went wrong: ${error}`}</Segment>
+      );
+    } else {
+      return null;
+    }
+  };
 
   const renderDiagnosecode = ( code : string) => {
     return (
@@ -146,6 +161,7 @@ const PatientPage = () => {
 
   return (
     <div>
+      {maybeRenderError()}
       <h2>{patient.name}</h2>
       <div>{patient.ssn}</div>
       <div>{patient.occupation}</div>
