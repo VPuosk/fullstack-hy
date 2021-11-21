@@ -1,4 +1,6 @@
-const { Sequelize, Model, DataTypes } = require('sequelize')
+const { Model, DataTypes } = require('sequelize')
+
+const { sequelize } = require('../util/db')
 
 class Blog extends Model {}
 
@@ -27,5 +29,7 @@ Blog.init({
   sequelize,
   underscored: true,
   timestamps: false,
-  modelName: 'note'
+  modelName: 'blog'
 })
+
+module.exports = Blog
