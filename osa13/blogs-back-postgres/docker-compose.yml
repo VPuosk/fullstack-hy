@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres
+    container_name: db
+    environment:
+        - POSTGRES_DB=fullstack
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=salasana
+    ports:
+        - "5432:5432"
