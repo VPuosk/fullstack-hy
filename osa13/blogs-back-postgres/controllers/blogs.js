@@ -1,17 +1,25 @@
 const router = require('express').Router()
-const { blogFinder } = require('../util/middleware')
+const { blogFinder, tokenExtractor } = require('../util/middleware')
 
-const { Blog } = require('../models')
+const { Blog, User } = require('../models')
 
 router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll()
+  const blogs = await Blog.findAll({
+    attributes: { exclude: ['userId'] },
+    include: {
+      model: User,
+      attributes: ['name']
+    }
+  })
   res.json(blogs)
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', tokenExtractor, async (req, res, next) => {
   const body = req.body
   try {
+    const user = await User.findByPk(req.decodedToken.id)
     const newBlog = Blog.build(body)
+    newBlog.userId = user.id
     const blog = await newBlog.save()
     res.json(blog)
   } catch (error) {
@@ -27,9 +35,15 @@ router.get('/:id', blogFinder, async (req, res) => {
   }
 })
 
-router.delete('/:id', blogFinder, async (req, res) => {
+router.delete('/:id', blogFinder, tokenExtractor, async (req, res) => {
   if (req.blog) {
-    await req.blog.destroy()
+    if (req.blog.userId === req.decodedToken.id) {
+      await req.blog.destroy()
+    } else {
+      res.status(401).json({
+        error: 'invalid user id trying to delete blog'
+      })
+    }
   } 
   res.status(204).end()
 })
