@@ -5,13 +5,25 @@ const { blogFinder, tokenExtractor } = require('../util/middleware')
 const { Blog, User } = require('../models')
 
 router.get('/', async (req, res) => {
-  const where = {}
+  let where = {}
 
   if (req.query.search) {
     console.log('search string: ', `${req.query.search}`)
-    where.title = {
-      [Op.iLike]: `%${req.query.search}%`
+    const search = {
+      [Op.or]: [
+        {
+          title: {
+            [Op.iLike]: `%${req.query.search}%`
+          }
+        },
+        {
+          author: {
+            [Op.iLike]: `%${req.query.search}%`
+          }
+        }
+      ]
     }
+    where = {...where, ...search}
   }
 
   const blogs = await Blog.findAll({
