@@ -12,6 +12,11 @@ const userFinder = async (req, res, next) => {
   next()
 }
 
+const userFinderID = async (req, res, next) => {
+  req.user = await User.findByPk(req.params.id)
+  next()
+}
+
 const tokenExtractor = async (req, res, next) => {
   const vahvistus = req.get('authorization')
   if (vahvistus && vahvistus.toLowerCase().startsWith('bearer ')) {
@@ -48,6 +53,7 @@ const errorHandler = (error, req, res, next) => {
 module.exports = {
   blogFinder,
   userFinder,
+  userFinderID,
   errorHandler,
   tokenExtractor,
 }
