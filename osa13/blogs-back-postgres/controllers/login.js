@@ -10,6 +10,13 @@ router.post('/', async (req, res) => {
     }
   })
 
+  // verifying account status
+  if (user.disabled) {
+    return res.status(401).json({
+      error: 'Account disabled'
+    })
+  }
+
   const passWordOK = req.body.password === 'salaatti'
 
   if (!user ) {
@@ -28,6 +35,10 @@ router.post('/', async (req, res) => {
   }
 
   const token = jwt.sign(userForToken, SECRET)
+
+  // saving logged status
+  user.logged = true
+  await user.save()
 
   res.status(200).send({
     token,

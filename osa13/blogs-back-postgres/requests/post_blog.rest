@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/blogs
 content-type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImvDpHl0dMOkasOkQGvDpHl0dGlzLmNvbSIsImlkIjoxLCJpYXQiOjE2Mzc4MjI2ODd9.dshYd7lMXa7hU_Qe1jwGQh3-utg0HoT21iKCaQyktjg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImvDpHl0dMOkasOkQGvDpHl0dGlzLmNvbSIsImlkIjoxLCJpYXQiOjE2Mzc5OTI2ODN9.uAJrCy1jIUeENe21s7iqzu9neC483wjHMzmoWPp0U_A
 
 {
-  "title": "tarina",
+  "title": "tarina 2",
   "author": "Devteam",
   "url": "dev/null",
-  "year": 2001
+  "year": 2002
 }

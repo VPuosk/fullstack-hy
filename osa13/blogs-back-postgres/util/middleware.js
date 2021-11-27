@@ -22,6 +22,22 @@ const tokenExtractor = async (req, res, next) => {
   if (vahvistus && vahvistus.toLowerCase().startsWith('bearer ')) {
     try {
       req.decodedToken = jwt.verify(vahvistus.substring(7), SECRET)
+
+      // status checks
+      const user = await User.findByPk(req.decodedToken.id)
+      if (user.disabled) {
+        req.decodedToken = null
+        return res.status(401).json({
+          error: 'Account disabled'
+        })
+      }
+      if (!user.logged) {
+        req.decodedToken = null
+        return res.status(401).json({
+          error: 'Login required'
+        })
+      }
+
     } catch (error) { 
       return res.status(401).json({
         error: 'invalid token'
